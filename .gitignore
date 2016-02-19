@@ -1,0 +1,52 @@
+# Compiled source #
+###################
+*.com
+*.class
+*.ctxt
+*.dll
+*.exe
+*.o
+*.pyc
+*.pyo
+*.so
+
+# IDE-specific package/project info #
+#####################################
+**/.classpath
+**/.project
+**/bluej.pkg
+**/package.bluej
+
+# Packages #
+############
+# it's better to commit the raw source; git has own compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor Backups #
+##################
+*.bak
+*.swp
+*~
+
+# Do not include the huge gifs/images directory!
+**/gifs
+**/images
+
+TeacherMaterials
+tmp
