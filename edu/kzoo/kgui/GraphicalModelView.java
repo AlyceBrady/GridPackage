@@ -1,4 +1,4 @@
-// Interface: GridDisplay
+// Interface: GraphicalModelView
 //
 // Author: Alyce Brady
 //
@@ -17,27 +17,27 @@
 //   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //   GNU General Public License for more details.
 
-package edu.kzoo.grid.display;
+package edu.kzoo.kgui;
 
 /**
- *  Grid Display Package:<br>
+ *  K College GUI Package:<br>
  *
- *  The <code>GridDisplay</code> interface specifies the
- *  methods that must be provided by any class used to display
- *  a <code>Grid</code> object and its contents.
+ *  The <code>GraphicalModelView</code> interface specifies the
+ *  methods that must be provided by any class used to provide
+ *  a graphical view of a model.
  *
  *  <p>
- *  The <code>GridDisplay</code> class is based on the
+ *  The <code>GraphicalModelView</code> class is based on the
  *  College Board's <code>EnvDisplay</code> class,
  *  as allowed by the GNU General Public License.
  *
  *  @author Alyce Brady
- *  @version 13 December 2003
+ *  @version 31 March 2004
  **/
-public interface GridDisplay
+public interface GraphicalModelView
 {
-    /** Shows the current state of the grid.
+    /** Provides a graphical view of the current state of the model.
      **/
-    void showGrid();
+    void showModel();
 
 }

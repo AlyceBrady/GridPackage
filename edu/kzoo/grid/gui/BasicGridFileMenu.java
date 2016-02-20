@@ -29,8 +29,8 @@ import java.util.Iterator;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import edu.kzoo.grid.Grid;
 import edu.kzoo.kgui.MinimalFileMenu;
+import edu.kzoo.kgui.ModelChangeListener;
 
 /**
  *  Grid GUI Support Package:<br>
@@ -49,7 +49,7 @@ import edu.kzoo.kgui.MinimalFileMenu;
  *  @see FileMenuActionHandler
  **/
 public class BasicGridFileMenu extends MinimalFileMenu
-            implements GridChangeListener
+            implements ModelChangeListener
 {
   // instance variables
     private Collection menuItemsThatNeedAGrid = new ArrayList();
@@ -97,7 +97,7 @@ public class BasicGridFileMenu extends MinimalFileMenu
                              GridDataFileHandler fileHandler)
     {
         this.parentFrame = frame;
-        frame.addGridChangeListener(this);
+        frame.addModelChangeListener(this);
         this.fileMenuActionHandler = menuActionHandler;
         this.fileHandler = fileHandler;
         makeFileMenu();
@@ -205,11 +205,11 @@ public class BasicGridFileMenu extends MinimalFileMenu
     /** Sets the enabled status of those GUI items that need a
      *  grid to be valid.
      **/
-    public void reactToNewGrid(Grid newGrid)
+    public void reactToNewModel(Object newModel)
     {
         Iterator iter = menuItemsThatNeedAGrid.iterator();
         while (iter.hasNext())
-            ((JMenuItem)iter.next()).setEnabled(newGrid != null);
+            ((JMenuItem)iter.next()).setEnabled(newModel != null);
     }
 
 }

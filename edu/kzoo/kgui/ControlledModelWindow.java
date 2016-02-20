@@ -1,4 +1,4 @@
-// Class ControlledGridAppFrame
+// Class ControlledModelWindow
 //
 // Author: Alyce Brady
 //
@@ -17,9 +17,7 @@
 //   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //   GNU General Public License for more details.
 
-package edu.kzoo.grid.gui;
-
-import edu.kzoo.grid.Grid;
+package edu.kzoo.kgui;
 
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -32,53 +30,56 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 /**
- *  Grid GUI Support Package:<br>
+ *  K College GUI Package:<br>
  *
- *  The <code>ControlledGridAppFrame</code> class provides a window in which
- *  to run and display a grid application controlled by the user via
- *  a combination of Step, NSteps, Run, and Stop buttons.  Other options
- *  include a speed slider bar and a Start/Restart button.
+ *  The <code>ControlledModelWindow</code> class provides a window in which
+ *  to graphically view a model and its contents, and which allows the
+ *  user to control the running of the application via a combination of
+ *  Step, NSteps, Run, and Stop buttons.  Other optional window components
+ *  supported by the <code>ModelWindow</code> superclass include a menu
+ *  bar, a speed slider, and a Start/Restart button.
  *
  *  @author Alyce Brady (based on code by Julie Zelenski)
- *  @version 29 February 2004
+ *  @version 31 March 2004
  **/
-public class ControlledGridAppFrame extends GridAppFrame
+public class ControlledModelWindow extends ModelWindow
 {
-    protected GridAppController controller;
+    protected SteppingModelController controller;
     protected Timer   timer;
     protected boolean putRestartFirst;
     protected JButton stepButton, nStepsButton,
                       runButton, stopButton;
-    protected boolean includeStep, includeNSteps, includeRun, includeStop;
     protected boolean running, runningNSteps;
+    private boolean   displayAfterEachStep;
     protected int     numStepsToRun, numStepsSoFar;
 
 
   // constructors and initialization methods
 
-    /** Constructs an empty ControlledGridAppFrame window object
-     *  that will display a model controlled by a combination of
-     *  Step, NSteps, Run, and Stop buttons. A ControlledGridAppFrame
-     *  constructed using this constructor will have no control
-     *  buttons unless the appropriate <code>include</code>Button
-     *  messages are sent before the <code>constructWindowContents</code>
-     *  message.  Use the <code>includeStartRestart</code> and
-     *  <code>includeSpeedSlider</code> to include components other
-     *  than the basic model display and the specified run buttons.
-     *  Finally, use the constructWindowContents method to set the
-     *  properties of the window and make it visible.
+    /** Constructs an empty ControlledModelWindow window object that will
+     *  display a grid controlled by a combination of Step, NSteps, Run,
+     *  and Stop buttons.  Use methods such as includeStepOnceButton,
+     *  includeRunButton, and includeStopButton, as well as the
+     *  includeSetUpButton and includeSpeedSlider methods from ModelWindow,
+     *  to include components on the frame.  Then use the
+     *  constructWindowContents method to set the properties of the window
+     *  and make it visible.  The displayAfterEachStep parameter specifies
+     *  whether the user interface should display the contents of the grid
+     *  after each individual step (once each time the Step button is pressed,
+     *  repeatedly when the NSteps or Run buttons are pressed). 
      *  (Precondition: control is not <code>null</code>.)
      *    @param control         the object that controls the running of the
      *                           application through step and/or run methods.
+     *    @param displayAfterEachStep <code>true</code> if the user interface
+     *                           should display the contents of the grid after
+     *                           each individual step;
+     *                           <code>false</code> otherwise
      **/
-    public ControlledGridAppFrame(GridAppController control)
+    public ControlledModelWindow(SteppingModelController control,
+                                 boolean displayAfterEachStep)
     {
         controller = control;
-
-        this.includeStep = false;
-        this.includeNSteps = false;
-        this.includeRun = false;
-        this.includeStop = false;
+        this.displayAfterEachStep = displayAfterEachStep;
 
         // Construct the buttons whether they will be included in the
         // control panel or not, so that the enable/disable code does not
@@ -86,7 +87,7 @@ public class ControlledGridAppFrame extends GridAppFrame
         stepButton = new JButton("Step Once");
         stepButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
-                { step(); }});
+                { stepAndDisplay(); }});
 
         nStepsButton = new JButton("Step N Times");
         nStepsButton.addActionListener(new ActionListener() {
@@ -112,7 +113,7 @@ public class ControlledGridAppFrame extends GridAppFrame
         timer = new Timer(getDelay(),
                           new ActionListener()
                           {   public void actionPerformed(ActionEvent evt)
-                              {   step();   }
+                              {   stepAndDisplay();   }
                           });
 
 
@@ -126,53 +127,12 @@ public class ControlledGridAppFrame extends GridAppFrame
         }
     }
 
-    /** Constructs an empty ControlledGridAppFrame window object that will
-     *  display a model controlled by a combination of Step, NSteps, Run, and
-     *  Stop buttons.  The boolean parameters determine which buttons
-     *  will be included in the control panel of the graphical user
-     *  interface.  Use methods such as <code>includeStartRestart</code>
-     *  and <code>includeSpeedSlider</code> to include components on the
-     *  other than the basic model display and the specified run buttons.
-     *  Then use the constructWindowContents method to set the properties
-     *  of the window and make it visible.
-     *  (Precondition: control is not <code>null</code>.)
-     *    @param control         the object that controls the running of the
-     *                           application through step and/or run methods.
-     *    @param includeStep     <code>true</code> if GUI should include
-     *                           a One Step button
-     *    @param includeNSteps   <code>true</code> if GUI should include
-     *                           an N Steps button
-     *    @param includeRun      <code>true</code> if GUI should include
-     *                           a Run... button
-     *    @param includeStop     <code>true</code> if GUI should include
-     *                           a Stop button
-     **/
-    public ControlledGridAppFrame(GridAppController control,
-                           boolean includeStep, boolean includeNSteps,
-                           boolean includeRun, boolean includeStop)
-    {
-        this(control);
-
-        if ( includeStep )
-            includeStepOnceButton();
-
-        if ( includeNSteps )
-            includeStepNTimesButton();
-
-        if ( includeRun )
-            includeRunButton();
-
-        if ( includeStop )
-            includeStopButton();
-    }
-
     /** Includes the Step Once button in the control panel.
      *  This method will have no effect unless it is
      *  called before the constructWindowContents method.
      **/
     public void includeStepOnceButton()
     {
-        this.includeStep = true;
         includeControlButton(stepButton);
     }
 
@@ -182,7 +142,6 @@ public class ControlledGridAppFrame extends GridAppFrame
      **/
     public void includeStepNTimesButton()
     {
-        this.includeNSteps = true;
         includeControlButton(nStepsButton);
     }
 
@@ -192,7 +151,6 @@ public class ControlledGridAppFrame extends GridAppFrame
      **/
     public void includeRunButton()
     {
-        this.includeRun = true;
         includeControlButton(runButton);
     }
 
@@ -202,47 +160,102 @@ public class ControlledGridAppFrame extends GridAppFrame
      **/
     public void includeStopButton()
     {
-        this.includeStop = true;
         includeControlButton(stopButton);
     }
 
 
-  // accessor methods
+  // methods that access this object's state
 
     /** Returns the controller used to drive the application. **/
-    public GridAppController getController()
+    public SteppingModelController getController()
     {
         return controller;
     }
 
-
-  // redefinition of methods from the GridDisplay interface
-
-    /** Sets the Grid being displayed.
-     *    @param grid the Grid to display
+    /** Specifies whether or not to display the contents of the grid
+     *  after each step.
+     *    @param whetherToDisplay <code>true</code> if the application
+     *                      should redisplay after each step;
+     *                      <code>false</code> otherwise
      **/
-    public void setGrid(Grid grid)
+    public void showDisplayAfterEachStep(boolean whetherToDisplay)
+    {
+        displayAfterEachStep = whetherToDisplay;
+    }
+
+    /** Returns <code>true</code> if the application should redisplay
+     *  after each step; returns <code>false</code> otherwise.
+     **/
+    protected boolean shouldShowDisplayAfterEachStep()
+    {
+        return displayAfterEachStep;
+    }
+
+
+  // redefinition of methods from the GraphicalModelView interface
+
+    /** Sets the model being displayed and the graphical viewer used to
+     *  view it.  This method should only be called by subclass methods
+     *  whose parameters are of the appropriate types for the actual model
+     *  and viewer used by a particular application.
+     *    @param model the model to graphically view
+     *    @param viewer the graphical viewer to view <code>model</code>
+     **/
+    protected void setModel(Object newModel, ScrollablePanel viewer)
     {
         if ( running )
             stop();
-        super.setGrid(grid);
+        super.setModel(newModel, viewer);
 
         // Set the application controller's grid to match this one.
-        controller.setGrid(grid);
+        controller.setModel(newModel);
 
         // Enable and disable buttons as appropriate.
-        if ( grid != null )
+        if ( newModel != null )
             enterNotRunningMode();
+    }
+
+    /* (non-Javadoc)
+     * @see edu.kzoo.kgui.GraphicalModelView#showModel()
+     */
+    public void showModel()
+    {
+        // Does not include a delay, because that is built in to the
+        // n steps and run methods.
+        getGraphicalModelViewer().showModel();
     }
 
 
   // methods that implement button actions
 
+    /** Sets up (initializes) or resets the application.
+     *  Should be redefined if the application wants to show
+     *  the grid after the initialization or reset.
+     **/
+    public void setup()
+    {
+        controller.restart();
+        enterNotRunningMode();
+    }
+
+    /** Advances the application one step and displays the grid if
+     *  appropriate.  Uses the Template Method pattern to make it easier
+     *  to redefine the step behavior and still display only after the
+     *  step has been completed.
+     **/
+    public void stepAndDisplay()
+    {
+        step();
+
+        if ( shouldShowDisplayAfterEachStep() )
+            showModel();
+    }
+
     /** Advances the application one step.  Should be redefined if the
-     *  application wants to show the grid after each step.  For example:
+     *  application wants to show the model after each step.  For example:
      *  <pre>
      *     super.step();
-     *     showGrid();
+     *     showModel();
      *  </pre>
      **/
     public void step()
@@ -264,7 +277,7 @@ public class ControlledGridAppFrame extends GridAppFrame
     public boolean shouldStop()
     { 
         return ( ( runningNSteps && numStepsSoFar == numStepsToRun ) ||
-            controller.hasReachedStoppingState() );
+                 controller.hasReachedStoppingState() );
     }
 
     /** Advances the application multiple (N) steps (where N is provided
@@ -349,24 +362,12 @@ public class ControlledGridAppFrame extends GridAppFrame
         enterNotRunningMode();
     }
 
-    /** Restarts the application.  Should be redefined if the
-     *  application wants to show the grid after the restart.
-     **/
-    public void setup()
-    {
-        controller.restart();
-        enterNotRunningMode();
-    }
-
     /** Enables and disables GUI components as necessary while the application
      *  is running.
      **/
     protected void enterRunningMode()
     {
         running = true;
-        // hide tool tips while running
-        if ( getGridDisplay() != null )
-            getGridDisplay().setToolTipsEnabled(false);
 
         stopButton.setEnabled(true);
 
@@ -386,8 +387,6 @@ public class ControlledGridAppFrame extends GridAppFrame
     protected void enterNotRunningMode()
     {
         running = runningNSteps = false;
-        if ( getGridDisplay() != null )
-            getGridDisplay().setToolTipsEnabled(true);
 
         stopButton.setEnabled(false);
 

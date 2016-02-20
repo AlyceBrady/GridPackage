@@ -1,4 +1,4 @@
-// Class GridAppController
+// Class SteppingModelController
 //
 // Author: Alyce Brady
 //
@@ -12,40 +12,41 @@
 //   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //   GNU General Public License for more details.
 
-package edu.kzoo.grid.gui;
-
-import edu.kzoo.grid.Grid;
+package edu.kzoo.kgui;
 
 import java.lang.UnsupportedOperationException;
 
 /**
- *  Grid GUI Support Package:<br>
+ *  K College GUI Package:<br>
  *
- *  A <code>GridAppController</code> controls the running of a
- *  grid application.
+ *  A <code>SteppingModelController</code> controls the running of a
+ *  application through timesteps.  Subclasses must override the
+ *  <code>step</code> method to do something meaningful for a
+ *  specific application.
  *
  *  @author Alyce Brady
- *  @version 29 February 2004
+ *  @version 31 March 2004
  **/
-public abstract class GridAppController  
+public abstract class SteppingModelController  
 {
-    private Grid grid = null;
+    private Object model = null;
 
-    /** Gets the application's grid.
-     *    @return the grid being controlled
+    /** Gets the model component of this application controlled
+     *  by this controller.
+     *    @return the model being controlled
      **/
-    public Grid getGrid()
+    public Object getModel()
     {
-        return this.grid;
+        return this.model;
     }
 
-    /** Sets the application's grid.
-     *  (Precondition: grid is not null.)
-     *    @param grid the Grid to act on
+    /** Sets the model component of this application controlled
+     *  by this controller.
+     *    @param model the model to act on
      **/
-    public void setGrid(Grid grid)
+    public void setModel(Object model)
     {
-        this.grid = grid;
+        this.model = model;
     }
 
     /** Advances the application one step. 
