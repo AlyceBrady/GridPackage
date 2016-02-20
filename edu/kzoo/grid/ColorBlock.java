@@ -34,15 +34,6 @@ public class ColorBlock extends GridObject
 
     /** Constructs a color block with the specified color.
      *  @param colorValue  the color that fills this color block
-     **/
-    public ColorBlock(Color colorValue)
-    {
-        super();
-        theColor = colorValue;
-    }
-
-    /** Constructs a color block with the specified color.
-     *  @param colorValue  the color that fills this color block
      *  @param grid        the grid containing this color block
      *  @param loc         the location of the color block in <code>grid</code>
      **/

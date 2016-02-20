@@ -29,7 +29,10 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
  *  Grid Display Package:<br>
- *
+ *  This class should no longer be used.  It will remain in the package for
+ *  sole purpose of allowing the MBSInAGrid examples to work.  All
+ *  new applications should use the appropriate display and then
+ *  add a <code>RotatedDecorator</code>.<br>
  *  This abstract class provides common implementation code for
  *  drawing a grid object.  The class will translate, scale, and
  *  rotate the graphics system as needed and then invoke its

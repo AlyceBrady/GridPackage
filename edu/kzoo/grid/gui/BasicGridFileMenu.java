@@ -17,7 +17,7 @@
 //   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //   GNU General Public License for more details.
 
-package edu.kzoo.grid.gui.nuggets;
+package edu.kzoo.grid.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,28 +29,27 @@ import java.util.Iterator;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import edu.kzoo.grid.Grid;
-import edu.kzoo.grid.gui.FileMenuActionHandler;
-import edu.kzoo.grid.gui.GridAppFrame;
-import edu.kzoo.grid.gui.GridChangeListener;
-import edu.kzoo.grid.gui.GridDataFileHandler;
+import edu.kzoo.kgui.MinimalFileMenu;
+import edu.kzoo.kgui.ModelChangeListener;
 
 /**
- *  Grid GUI Nuggets Package (Handy Grid GUI Components):<br>
+ *  Grid GUI Support Package:<br>
  *
  *  The <code>BasicGridFileMenu</code> class provides a file menu
  *  for creating, reading, and writing grids.  The menu will always
- *  include a Quit menu option.  It will include New Grid and
- *  Edit Grid menu options if provided with a menu action handler
- *  that supports grid editing.  It will include Open and Save
- *  menu options if provided with a valid (non-null) file handler.
+ *  include a Quit menu option.  It will include Open and Save menu
+ *  options only if <code>fileHandler</code> is not <code>null</code>.
+ *  By default it will not include New Grid or Edit Grid options,
+ *  but <code>BasicGridFileMenu</code> subclasses may override the
+ *  <code>createFileMenuActionHandler</code> method to create an
+ *  action handler that supports grid editing.
  *
  *  @author Alyce Brady (based on code by Julie Zelenski)
  *  @version 29 February 2004
  *  @see FileMenuActionHandler
  **/
 public class BasicGridFileMenu extends MinimalFileMenu
-            implements GridChangeListener
+            implements ModelChangeListener
 {
   // instance variables
     private Collection menuItemsThatNeedAGrid = new ArrayList();
@@ -97,9 +96,8 @@ public class BasicGridFileMenu extends MinimalFileMenu
                              FileMenuActionHandler menuActionHandler,
                              GridDataFileHandler fileHandler)
     {
-        super(false);   // Do not want Quit menu item as first item, if at all
         this.parentFrame = frame;
-        frame.addGridChangeListener(this);
+        frame.addModelChangeListener(this);
         this.fileMenuActionHandler = menuActionHandler;
         this.fileHandler = fileHandler;
         makeFileMenu();
@@ -207,11 +205,11 @@ public class BasicGridFileMenu extends MinimalFileMenu
     /** Sets the enabled status of those GUI items that need a
      *  grid to be valid.
      **/
-    public void reactToNewGrid(Grid newGrid)
+    public void reactToNewModel(Object newModel)
     {
         Iterator iter = menuItemsThatNeedAGrid.iterator();
         while (iter.hasNext())
-            ((JMenuItem)iter.next()).setEnabled(newGrid != null);
+            ((JMenuItem)iter.next()).setEnabled(newModel != null);
     }
 
 }

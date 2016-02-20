@@ -101,14 +101,7 @@ public class ScaledImageDisplay extends ScaledDisplay
 
         icon.paintIcon(comp, g2, -icon.getIconWidth()/2, -icon.getIconHeight()/2);    
     }
-    
-    /** Adjusts the graphics system for drawing an object, as appropriate.
-     *  This method actually makes no further adjustments, but subclasses
-     *  could override this method to rotate or color the object, for example.
-     */
-    public void adjust(GridObject obj, Component comp, Graphics2D g2)
-    {
-    }
+
     
     /** Adjusts the graphics system to use an object's color to tint an image.
      *  (Precondition: <code>obj</code> has a <code>color</code> method.)

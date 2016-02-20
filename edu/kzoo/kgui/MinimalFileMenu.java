@@ -2,6 +2,11 @@
 //
 // Author: Alyce Brady
 //
+// This class is based on code from the College Board's MBSGUIFrame class,
+// as allowed by the GNU General Public License.  MBSGUIFrame
+// is a black-box class within the AP(r) CS Marine Biology Simulation
+// case study (see www.collegeboard.com/ap/students/compsci).
+//
 // License Information:
 //   This class is free software; you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
@@ -12,7 +17,7 @@
 //   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //   GNU General Public License for more details.
 
-package edu.kzoo.grid.gui.nuggets;
+package edu.kzoo.kgui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,7 +28,7 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 /**
- *  Grid GUI Nuggets Package (Handy Grid GUI Components):<br>
+ *  K College GUI Package:<br>
  *
  *  The <code>MinimalFileMenu</code> class provides a file menu
  *  that initially has no menu items, although the class also provides
@@ -36,44 +41,19 @@ import javax.swing.KeyStroke;
 public class MinimalFileMenu extends JMenu
 {
 
-    /** Creates a minimal File menu containing only a Quit option.  
+    /** Creates an empty File menu.  
      **/
     public MinimalFileMenu()
     {
-        this("File", true);
+        super("File");
     }
 
-    /** Creates a File menu that may be empty or may include a Quit option.
-     *    @param includeQuitOption  <code>true</code> if the File menu
-     *                              should include a Quit option;
-     *                              <code>false</code>  otherwise
-     **/
-    public MinimalFileMenu(boolean includeQuitOption)
-    {
-        this("File", includeQuitOption);
-    }
-
-    /** Creates a minimal File menu with the specifed name containing
-     *  only a Quit option.
+    /** Creates an empty menu with the specifed name.
      *    @param name the label for this menu in the menu bar 
      **/
     public MinimalFileMenu(String name)
     {
-        this(name, true);
-    }
-
-    /** Creates a File menu with the specifed name that may be empty
-     *  or may include a Quit option.
-     *    @param name the label for this menu in the menu bar 
-     *    @param includeQuitOption  <code>true</code> if the File menu
-     *                              should include a Quit option;
-     *                              <code>false</code>  otherwise
-     **/
-    public MinimalFileMenu(String name, boolean includeQuitOption)
-    {
         super(name);
-        if ( includeQuitOption )
-            addQuitMenuItem();
     }
 
     /** Adds a Quit menu option to this menu.

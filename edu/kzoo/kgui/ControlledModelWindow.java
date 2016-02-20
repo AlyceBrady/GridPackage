@@ -1,4 +1,4 @@
-// Class SteppedGridAppFrame
+// Class ControlledModelWindow
 //
 // Author: Alyce Brady
 //
@@ -17,50 +17,50 @@
 //   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //   GNU General Public License for more details.
 
-package edu.kzoo.grid.gui;
-
-import edu.kzoo.grid.Grid;
+package edu.kzoo.kgui;
 
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 /**
- *  Grid GUI Support Package:<br>
+ *  K College GUI Package:<br>
  *
- *  The <code>SteppedGridAppFrame</code> class provides a window in which
- *  to run and display a grid application controlled by the user via
- *  a combination of Step, NSteps, Run, and Stop buttons.  Other options
- *  provided by the <code>GridAppFrame</code> superclass include a
- *  speed slider bar and a Start/Restart button.
+ *  The <code>ControlledModelWindow</code> class provides a window in which
+ *  to graphically view a model and its contents, and which allows the
+ *  user to control the running of the application via a combination of
+ *  Step, NSteps, Run, and Stop buttons.  Other optional window components
+ *  supported by the <code>ModelWindow</code> superclass include a menu
+ *  bar, a speed slider, and a Start/Restart button.
  *
  *  @author Alyce Brady (based on code by Julie Zelenski)
- *  @version 29 February 2004
+ *  @version 31 March 2004
  **/
-public class SteppedGridAppFrame extends GridAppFrame
+public class ControlledModelWindow extends ModelWindow
 {
-    protected SteppedGridAppController appController;
+    protected SteppingModelController controller;
     protected Timer   timer;
-    protected boolean displayAfterEachStep;
-    protected boolean runningNSteps;
+    protected boolean putRestartFirst;
+    protected JButton stepButton, nStepsButton,
+                      runButton, stopButton;
+    protected boolean running, runningNSteps;
+    private boolean   displayAfterEachStep;
     protected int     numStepsToRun, numStepsSoFar;
 
 
-  // constructors and methods that specify which components to include
-  //   in the window
+  // constructors and initialization methods
 
-    /** Constructs an empty SteppedGridAppFrame window object that will
-     *  display a grid controlled by a combination of Step, NSteps, Run, and
-     *  Stop buttons.  Use methods such as includeStepOnceButton,
+    /** Constructs an empty ControlledModelWindow window object that will
+     *  display a grid controlled by a combination of Step, NSteps, Run,
+     *  and Stop buttons.  Use methods such as includeStepOnceButton,
      *  includeRunButton, and includeStopButton, as well as the
-     *  includeSetUpButton and includeSpeedSlider methods from GridAppFrame,
+     *  includeSetUpButton and includeSpeedSlider methods from ModelWindow,
      *  to include components on the frame.  Then use the
      *  constructWindowContents method to set the properties of the window
      *  and make it visible.  The displayAfterEachStep parameter specifies
@@ -68,151 +68,48 @@ public class SteppedGridAppFrame extends GridAppFrame
      *  after each individual step (once each time the Step button is pressed,
      *  repeatedly when the NSteps or Run buttons are pressed). 
      *  (Precondition: control is not <code>null</code>.)
-     *    @param control            the object that controls the running of
-     *                              the grid application through step
-     *                              and/or run methods
+     *    @param control         the object that controls the running of the
+     *                           application through step and/or run methods.
      *    @param displayAfterEachStep <code>true</code> if the user interface
-     *                              should display the contents of the grid
-     *                              after each individual step;
-     *                              <code>false</code> otherwise
+     *                           should display the contents of the grid after
+     *                           each individual step;
+     *                           <code>false</code> otherwise
      **/
-    public SteppedGridAppFrame(SteppedGridAppController control,
-                               boolean displayAfterEachStep)
+    public ControlledModelWindow(SteppingModelController control,
+                                 boolean displayAfterEachStep)
     {
-        appController = control;
+        controller = control;
         this.displayAfterEachStep = displayAfterEachStep;
-    }
 
-    /** Includes a set/initialize/reset button with the specified label.
-     *  This method will have no effect unless it is
-     *  called before the constructWindowContents method.
-     *     @param label the button label (examples: "Initialize", "Start",
-     *                                              "Restart", "Reset") 
-     *     @param enableDisableIndicator indicates when the set/reset button
-     *                                   should be enabled or disabled
-     *     @param initiallyEnabled true if button should initially be enabled;
-     *                    false if button should initially be disabled
-     *     @param displayAfterSetReset true if grid should be displayed after
-     *                    set/reset is complete; false otherwise
-     **/
-    public void includeSetResetButton(String label,
-                                      int enableDisableIndicator,
-                                      boolean initiallyEnabled,
-                                      boolean displayAfterSetReset)
-    {
-        // Create the button and add to control panel.
-        JButton startButton = 
-            new ThreadedControlButton(this, label, displayAfterSetReset)
-                { public void act() { initialize(); }};
-        includeControlComponent(startButton, enableDisableIndicator);
-        startButton.setEnabled(initiallyEnabled);
-    }
-
-    /** Includes the Step Once button in the control panel.
-     *  This method will have no effect unless it is
-     *  called before the constructWindowContents method.
-     **/
-    public void includeStepOnceButton()
-    {
-        // Create the button and add to control panel.
-        JButton stepButton = new JButton("Step Once");
-        includeControlComponent(stepButton,
-                           EnabledDisabledStates.NEEDS_GRID_AND_APP_WAITING);
-
-        // Define the action listener for the button.
+        // Construct the buttons whether they will be included in the
+        // control panel or not, so that the enable/disable code does not
+        // have to constantly check for each one. 
+        stepButton = new JButton("Step Once");
         stepButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
                 { stepAndDisplay(); }});
-    }
 
-    /** Includes the Step N Times button in the control panel.
-     *  This method will have no effect unless it is
-     *  called before the constructWindowContents method.
-     **/
-    public void includeStepNTimesButton()
-    {
-        // Create the button and add to control panel.
-        JButton nStepsButton = new JButton("Step N Times");
-        includeControlComponent(nStepsButton,
-                            EnabledDisabledStates.NEEDS_GRID_AND_APP_WAITING);
-
-        // Define the action listener for the button.
+        nStepsButton = new JButton("Step N Times");
         nStepsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
                 { nSteps(); }});
-    }
 
-    /** Includes the Run button in the control panel.
-     *  This method will have no effect unless it is
-     *  called before the constructWindowContents method.
-     **/
-    public void includeRunButton()
-    {
-        // Create the button and add to control panel.
-        JButton runButton = new JButton("Run...");
-        includeControlComponent(runButton,
-                            EnabledDisabledStates.NEEDS_GRID_AND_APP_WAITING);
-
-        // Define the action listener for the button.
+        runButton = new JButton("Run...");
         runButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
                 { run(); }});
-    }
 
-    /** Includes the Stop button in the control panel.
-     *  This method will have no effect unless it is
-     *  called before the constructWindowContents method.
-     **/
-    public void includeStopButton()
-    {
-        // Create the button and add to control panel.
-        JButton stopButton = new JButton("Stop");
-        includeControlComponent(stopButton,
-                                EnabledDisabledStates.NEEDS_APP_RUNNING);
-
-        // Define the action listener for the button.
+        stopButton = new JButton("Stop");
         stopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
                 { stop(); }});
-    }
 
+        stepButton.setEnabled(false);
+        nStepsButton.setEnabled(false);
+        runButton.setEnabled(false);
+        stopButton.setEnabled(false);
 
-  // methods that access this object's state
-
-    /** Returns the controller used to drive the application. **/
-    public SteppedGridAppController getController()
-    {
-        return appController;
-    }
-
-    /** Specifies whether or not to display the contents of the grid
-     *  after each step.
-     *    @param whetherToDisplay <code>true</code> if the application
-     *                      should redisplay after each step;
-     *                      <code>false</code> otherwise
-     **/
-    public void showDisplayAfterEachStep(boolean whetherToDisplay)
-    {
-        displayAfterEachStep = whetherToDisplay;
-    }
-
-
-  // methods and nested classes for building the control panel
-
-    /** Creates the control panel.
-     *    @param title description for this set of control components
-     *    @return a panel containing the control components
-     **/
-    protected JPanel makeControlPanel(String title)
-    {
-        // Create a panel for the control components.
-        if ( title == null )
-            title = "Control Buttons";
-        JPanel controlPanel = super.makeControlPanel(title);
-
-        // Define timer used by NSteps and Run buttons.  Define it here
-        // rather than in the constructor because it is critical that
-        // the speed slider (if there's going to be one) be created first.
+        // Define timer used by NSteps and Run buttons.
         timer = new Timer(getDelay(),
                           new ActionListener()
                           {   public void actionPerformed(ActionEvent evt)
@@ -228,44 +125,117 @@ public class SteppedGridAppFrame extends GridAppFrame
                     timer.setDelay(((JSlider)evt.getSource()).getValue());
                 }});
         }
+    }
 
-        return controlPanel;
+    /** Includes the Step Once button in the control panel.
+     *  This method will have no effect unless it is
+     *  called before the constructWindowContents method.
+     **/
+    public void includeStepOnceButton()
+    {
+        includeControlButton(stepButton);
+    }
+
+    /** Includes the Step N Times button in the control panel.
+     *  This method will have no effect unless it is
+     *  called before the constructWindowContents method.
+     **/
+    public void includeStepNTimesButton()
+    {
+        includeControlButton(nStepsButton);
+    }
+
+    /** Includes the Run button in the control panel.
+     *  This method will have no effect unless it is
+     *  called before the constructWindowContents method.
+     **/
+    public void includeRunButton()
+    {
+        includeControlButton(runButton);
+    }
+
+    /** Includes the Stop button in the control panel.
+     *  This method will have no effect unless it is
+     *  called before the constructWindowContents method.
+     **/
+    public void includeStopButton()
+    {
+        includeControlButton(stopButton);
     }
 
 
-  // redefinition of methods from the GridDisplay interface
+  // methods that access this object's state
 
-    /** Sets the Grid being displayed.
-     *    @param grid the Grid to display
-     **/
-    public void setGrid(Grid grid)
+    /** Returns the controller used to drive the application. **/
+    public SteppingModelController getController()
     {
-        if ( isInRunningMode() )
+        return controller;
+    }
+
+    /** Specifies whether or not to display the contents of the grid
+     *  after each step.
+     *    @param whetherToDisplay <code>true</code> if the application
+     *                      should redisplay after each step;
+     *                      <code>false</code> otherwise
+     **/
+    public void showDisplayAfterEachStep(boolean whetherToDisplay)
+    {
+        displayAfterEachStep = whetherToDisplay;
+    }
+
+    /** Returns <code>true</code> if the application should redisplay
+     *  after each step; returns <code>false</code> otherwise.
+     **/
+    protected boolean shouldShowDisplayAfterEachStep()
+    {
+        return displayAfterEachStep;
+    }
+
+
+  // redefinition of methods from the GraphicalModelView interface
+
+    /** Sets the model being displayed and the graphical viewer used to
+     *  view it.  This method should only be called by subclass methods
+     *  whose parameters are of the appropriate types for the actual model
+     *  and viewer used by a particular application.
+     *    @param model the model to graphically view
+     *    @param viewer the graphical viewer to view <code>model</code>
+     **/
+    protected void setModel(Object newModel, ScrollablePanel viewer)
+    {
+        if ( running )
             stop();
-        super.setGrid(grid);
+        super.setModel(newModel, viewer);
 
         // Set the application controller's grid to match this one.
-        appController.setGrid(grid);
+        controller.setModel(newModel);
 
         // Enable and disable buttons as appropriate.
-        if ( grid != null )
+        if ( newModel != null )
             enterNotRunningMode();
     }
 
-    /** Shows the grid.
-     **/
-    public void showGrid()
+    /* (non-Javadoc)
+     * @see edu.kzoo.kgui.GraphicalModelView#showModel()
+     */
+    public void showModel()
     {
-        getDisplay().showGrid();
+        // Does not include a delay, because that is built in to the
+        // n steps and run methods.
+        getGraphicalModelViewer().showModel();
     }
 
 
   // methods that implement button actions
 
-    /** Sets up (initializes) or resets the application. **/
-    public void initialize()
+    /** Sets up (initializes) or resets the application.
+     *  Should be redefined if the application wants to show
+     *  the grid after the initialization or reset.
+     **/
+    public void setup()
     {
-        appController.init();
+        controller.restart();
+        enterNotRunningMode();
     }
 
     /** Advances the application one step and displays the grid if
@@ -277,19 +247,25 @@ public class SteppedGridAppFrame extends GridAppFrame
     {
         step();
 
-        if ( displayAfterEachStep )
-            showGrid();
+        if ( shouldShowDisplayAfterEachStep() )
+            showModel();
     }
 
-    /** Advances the application one step. **/
+    /** Advances the application one step.  Should be redefined if the
+     *  application wants to show the model after each step.  For example:
+     *  <pre>
+     *     super.step();
+     *     showModel();
+     *  </pre>
+     **/
     public void step()
     {
-        appController.step();
+        controller.step();
 
         if ( runningNSteps )
             numStepsSoFar++;
 
-        if ( isInRunningMode() && shouldStop() )
+        if ( running && shouldStop() )
             stop();
     }
 
@@ -301,7 +277,7 @@ public class SteppedGridAppFrame extends GridAppFrame
     public boolean shouldStop()
     { 
         return ( ( runningNSteps && numStepsSoFar == numStepsToRun ) ||
-                 appController.hasReachedStoppingState() );
+                 controller.hasReachedStoppingState() );
     }
 
     /** Advances the application multiple (N) steps (where N is provided
@@ -386,13 +362,42 @@ public class SteppedGridAppFrame extends GridAppFrame
         enterNotRunningMode();
     }
 
+    /** Enables and disables GUI components as necessary while the application
+     *  is running.
+     **/
+    protected void enterRunningMode()
+    {
+        running = true;
+
+        stopButton.setEnabled(true);
+
+        stepButton.setEnabled(false);
+        nStepsButton.setEnabled(false);
+        runButton.setEnabled(false);
+        if ( getSetupButton() != null )
+            getSetupButton().setEnabled(false);
+
+        if ( getJMenuBar() != null )
+            getJMenuBar().setEnabled(false);
+    }
+
     /** Enables and disables GUI components as necessary when an application
      *  is not running.
      **/
-    public void enterNotRunningMode()
+    protected void enterNotRunningMode()
     {
-        runningNSteps = false;
-        super.enterNotRunningMode();
+        running = runningNSteps = false;
+
+        stopButton.setEnabled(false);
+
+        stepButton.setEnabled(true); 
+        nStepsButton.setEnabled(true);
+        runButton.setEnabled(true); 
+        if ( getSetupButton() != null )
+            getSetupButton().setEnabled(true);
+
+        if ( getJMenuBar() != null )
+            getJMenuBar().setEnabled(true);
     }
 
 }

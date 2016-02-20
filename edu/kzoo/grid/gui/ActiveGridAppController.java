@@ -30,7 +30,7 @@ import edu.kzoo.grid.GridObject;
  *  @author Alyce Brady
  *  @version 15 December 2003
  **/
-public class ActiveGridAppController extends SteppedGridAppController
+public class ActiveGridAppController extends GridAppController
 {
     /** Advances the application one step by asking every object in
      *  the grid to <code>act</code>, assuming that all objects in

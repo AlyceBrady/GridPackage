@@ -1,4 +1,4 @@
-// Class: ValidatedInputReader2
+// Class: ValidatedInputReader
 //
 // Author: Alyce Brady
 //

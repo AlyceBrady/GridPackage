@@ -1,6 +1,6 @@
 // Class: ScaledDisplay
 //
-// Author: Alyce Brady
+// Author: Alyce Brady, Joel Booth
 //
 // This class is based on the College Board's AbstractFishDisplay class,
 // as allowed by the GNU General Public License.  AbstractFishDisplay is a
@@ -26,6 +26,8 @@ import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
+import java.util.ArrayList;
+
 /**
  *  Grid Display Package:<br>
  *
@@ -36,10 +38,15 @@ import java.awt.Rectangle;
  *  define <code>draw</code> to just display an object with a fixed size.
  *
  *  @author Alyce Brady (based on AbstractFishDisplay by Julie Zelenski)
- *  @version 13 December 2003
+ *  @author Joel Booth (Added the mechanism to allow for decorators) 
+ *  @version 28 July 2004
  **/
 public abstract class ScaledDisplay implements GridObjectDisplay
 {        
+	
+	// Instance Variables
+	private ArrayList decorations = new ArrayList();
+	
     /** Draw the given GridObject object.
      *  Subclasses should implement this method to draw the object in a 
      *  cell of size (1,1) centered around (0,0) on the drawing surface.
@@ -71,11 +78,39 @@ public abstract class ScaledDisplay implements GridObjectDisplay
         g2.scale(scaleFactor, scaleFactor);
         g2.setStroke(new BasicStroke(1.0f/scaleFactor));
 
+        // Apply the decorators
+        if (!decorations.isEmpty()) {
+        	for (int i = 0; i < decorations.size(); i++) {
+        		((DisplayDecorator)decorations.get(i)).decorate(this, obj, comp, g2);
+        	}
+       	
+        }
+
         // Adjust (e.g., rotate) as necessary.
         adjust(obj, comp, g2);
-
+        
+        // Draw the image
         draw(obj, comp, g2);
     }
+    
+    /** Add a Decorator to the display in order to add some functionality.
+     * 
+     *  @param d The decorator to add
+     */
+    public void addDecorator(DisplayDecorator d)
+    {
+		decorations.add(d);
+    }
+    
+    /** Remove a Decorator from the display
+     * 
+     *  @param d The decorator to remove
+     */
+	public void removeDecorator(DisplayDecorator d)
+	{
+		decorations.remove(d);
+	}
+    
     
     /** Adjusts the graphics system for drawing an object, as appropriate.
      *  This method actually makes no further adjustments, but subclasses

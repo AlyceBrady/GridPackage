@@ -1,4 +1,4 @@
-// Interface: Active
+// Class: ModelChangeListener
 //
 // Author: Alyce Brady
 //
@@ -12,21 +12,22 @@
 //   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //   GNU General Public License for more details.
 
-package edu.kzoo.grid;
+package edu.kzoo.kgui;
 
 /**
- *  Grid Container Package:<br>
+ *  K College GUI Package:<br>
  *
- *  The <code>Active</code> interface defines a type for objects that
- *  respond to the <code>act</code> method.
+ *  The <code>ModelChangeListener</code> interface specifies the
+ *  method used to notify <code>ModelChangeListener</code> objects
+ *  of changes to the model.
  *
  *  @author Alyce Brady
- *  @version 13 December 2003
+ *  @version 31 March 2004
  **/
-public interface Active
+public interface ModelChangeListener
 {
-    /** Acts for one step in an animation or simulation.
+    /** Reacts to a change in the model being used.
+     *    @param newModel  the new model being used
      **/
-    public void act();
-
+    public void reactToNewModel(Object newModel);
 }
