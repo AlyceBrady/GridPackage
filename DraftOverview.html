@@ -1,0 +1,938 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Generic Environment Overview</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <link href="mailto:abrady@kzoo.edu">
+   <link rel="STYLESHEET" type="text/css" href="genEnv.css"></head>
+</head>
+
+<body>
+<h1 align="center">Overview of the <br>
+  Java Grid Package Class Library<br>
+  DRAFT</h1>
+<p align="center">&nbsp;</p>
+<p align="left">This document is in three parts, organized around the following
+  questions:</p>
+<ul>
+  <li><a href="#WhatAndWhy">What is the Grid Package class library, 
+    and why was it developed?</a></li>
+  <li><a href="#Components">The main components of  the Grid Package class 
+    library</a></li>
+  <li><a href="#Compiling">Compiling and running a program that uses the Grid
+      Package class library</a> </li>
+  <li><a href="#Extending">Extending the Grid Package class library 
+    to customize the graphical user interface or graphical display of an application</a></li>
+</ul>
+<p>&nbsp;</p>
+<h2><a name="WhatAndWhy"></a>What (and why?) is the Grid Package class 
+  library?</h2>
+<p>There are many introductory programming assignments that involve objects in
+  a two-dimensional data structure.&nbsp; They include games, like tic-tac-toe,
+   checkers, and chess; maze programs; simulations, like the Game of Life<font color="#FF0000">[citation?]</font> or
+  the AP<sup>&reg;</sup> Marine
+  Biology Simulation (MBS) case study<font color="#FF0000">[citation]</font>;
+  and simpler programs that use a grid as graph paper for drawing histograms
+  or bit-mapped drawings.&nbsp; These
+  projects lend themselves to graphical representations, but the overhead involved
+  in implementing graphical user interfaces for such assignments, especially
+  interfaces that support user interaction, is non-trivial.&nbsp; The Grid Package
+  provides a set of simple Java classes for modeling objects in a two-dimensional
+  grid, and provides a library of other classes that make it easy to create graphical
+  user interfaces to display and interact with such models. </p>
+<p>The Grid Package was inspired by, and evolved from, the AP<sup>&reg;</sup> Marine
+  Biology Simulation (MBS) case study.<sup>&#8224;</sup>&nbsp; The MBS case study
+  introduced a two-dimensional data structure called
+  an <i><code>Environment</code></i>,
+    which represents the marine environment (lake, bay, or pond) for  fish
+   in 
+  a simulation.&nbsp; The Grid Package introduces a similar<i><code>Grid</code></i> data
+  structure that models a two-dimensional
+     grid made up of rows and columns and a <i><code>GridObject</code></i> class
+     that represents objects in a grid.&nbsp; Each cell in a grid may be
+     empty or may contain one <i><code>GridObject</code></i> object. A <i><code>GridObject</code></i>  object
+     keeps track of its own row/column location in the grid and provides methods
+     for checking and changing an object's location.&nbsp; Subclasses of the
+     <i><code>GridObject</code></i> class represent different kinds of objects
+     that can be placed in a grid, each of which may have different behavior.&nbsp; The
+     diagram below shows several different kinds of grid objects in a grid.&nbsp; (Programmers
+     familiar with the MBS case study may be interested in reading a <a href="MBSGridPkgModelDifferences.html">summary
+     of the differences between the MBS <i><code>Environment/Locatable</code></i> pair
+     and the Grid Package
+     <i><code>Grid/GridObject</code></i> pair</a>. <font color="#FF0000">[not
+     written yet!]</font>)</p>
+<table width="95%" border="0" cellspacing="0" cellpadding="0" align="center">
+  <tr>
+    <td><pre>Grid grid = new BoundedGrid(3, 3);
+grid.add(new TextCell(&quot;A&quot;), new Location(0, 0));
+grid.add(new ColorBlock(Color.RED), new Location(2, 2));</pre></td>
+    <td><font color="#FF0000">[Figure 1: Need illustration]</font></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>The Grid Package supports five basic types of graphical user interfaces
+  for applications that use grid objects.&nbsp; An application might have:</p>
+<ul>
+  <li>a simple GUI containing a display of the contents of a grid (Figure 2a),</li>
+  <li>a simple GUI containing an animated display of the changing contents
+    of a grid, with a slider bar to control the speed of the animation (Figure
+    2b), </li>
+  <li>an interactive GUI that allows users to control the behavior of the application
+    by clicking on control buttons (Figure 2c),</li>
+  <li>a specialized interactive GUI that operates on &quot;stepped&quot; applications (applications
+    such as simulations that run in discrete steps), with control buttons such
+    as Start/Restart, Step, or Run (Figure 2d), or</li>
+  <li>an
+      interactive GUI that allows users to control the behavior of the application
+      by clicking
+      on grid cells (the appearance of this kind of GUI is similar
+      to those above).</li>
+</ul>
+<p>The heart of any graphical user interface for a grid-based application is
+  the display of the grid contents.&nbsp; The Grid Package provides a <i><code>ScrollableGridDisplay</code></i> class
+  that knows how to display a grid.&nbsp; The application, though, needs to specify
+  how to display the individual objects in the grid.&nbsp; (The procedure for
+  doing this is described below in the <a href="#Display">Displaying objects
+  in a grid</a> section.)&nbsp; Several display classes, such as <i><code>ColorBlockDisplay</code></i>,
+  <i><code>TextCellDisplay</code></i>, and <i><code>DefaultDisplay</code></i> (displays
+  a question mark), are provided in the Grid Package.&nbsp; Furthermore, there
+  are several classes for displaying images, such as <i><code>ScaledImageDisplay</code></i>, that
+  provide an easy way to display other kinds of grid objects without writing
+graphics code.</p>
+<p>&nbsp;&nbsp; <font color="#FF0000">[Figures 2a, 2b, 2c, 2d: Need 4
+    pictures: grid as illustration (display only), grid animation (display with
+    slider),
+    grid
+    with
+  control buttons, stepped appl with control buttons]</font></p>
+<p>&nbsp;</p>
+<h2><a name="Components"></a>Main components of  the Grid Package class library</h2>
+<p>The  components for creating grid applications using the Grid Package
+  class library are provided in three Java packages.&nbsp; The classes for modeling
+  a grid and its contents are in the <code>edu.kzoo.grid</code> package.&nbsp; The
+  classes for displaying the contents of a grid are in the <code>edu.kzoo.grid.display</code> package.&nbsp; The
+  classes for creating a graphical user interface for a grid application are
+  in the <code>edu.kzoo.grid.gui</code> package.&nbsp; In addition, there is
+  a separate package, <code>edu.kzoo.grid.gui.nuggets</code>, that contains a
+  handful of small, ready-to-use GUI components, such as <i><code>MinimalFileMenu</code></i>, <i><code>NewBoundedGridButton</code></i>,
+  <i><code>ClearGridButton</code></i>, <i><code>BGColorChooser</code></i>, and so on.</p>
+<p><a name="Model"></a>
+</p>
+<h3>Components for modeling objects in a grid</h3>
+<p>The most important classes in the Grid Package class library are the <i><code>Grid</code></i> class
+  (and its subclasses), which models a two-dimensional grid made up of rows and
+  columns, and the <i><code>GridObject</code></i> class (and its subclasses),
+  which represents objects in a grid.The <i><code>Grid</code></i> class is an
+  abstract class and so cannot be instantiated.&nbsp; Subclasses
+  of the <i><code>Grid</code></i> class may represent a grid various ways,
+  including as a two-dimensional data structure that keeps track of
+  the contents
+  of each cell
+  in
+  the grid,  as a bounded or unbounded <i><code>ArrayList</code></i> of
+  grid objects, or as a map of locations and objects at those locations.&nbsp; The
+  Grid Package includes a <i><code>BoundedGrid</code></i> class that
+  uses a two-dimensional array, an <i><code>ArrayListGrid.Bounded</code></i> class
+  that keeps track of the number of rows and columns in the grid and contains
+  the grid objects
+  in an <i><code>ArrayList</code></i>, and an <i><code>ArrayListGrid.Unbounded</code></i> class
+  that uses an <i><code>ArrayList</code></i>  to store the grid objects in a
+  grid without defined boundaries.&nbsp; <i><code>BoundedGrid</code></i> and
+  <i><code>ArrayListGrid.Bounded</code></i> objects are constructed with a specific
+  number of rows (<code>R</code>) and columns
+  (<code>C</code>);
+   the valid locations in the grid range from<code> (0, 0)</code> to<code> (R-1,
+  C-1)</code>.&nbsp; An <i><code>ArrayListGrid.Unbounded</code></i> object does
+  not have a specified number of rows or columns, and all locations are valid,
+  including locations
+  with negative row or column numbers.&nbsp; (Rows and columns in any <i><code>Grid</code></i> are
+  of type <code>int</code>, so the constraints on locations in an <i><code>ArrayListGrid.Unbounded</code></i> are
+  those imposed by the <code>int</code> type.)</p>
+<p>The <i><code>ArrayListGrid.Bounded</code></i> and
+  <i><code>ArrayListGrid.Unbounded</code></i> representations are possible because
+  all <i><code>GridObject</code></i> objects
+  keep track of their own location, an object of the <i><code>Location</code></i> class.
+  (The <i><code>Location<sup>&#8225;</sup></code></i> class represents a row,
+  column pair.)&nbsp;  The
+  Grid Package provides two sample <i><code>GridObject</code></i> subclasses, <i><code>ColorBlock</code></i> and <i><code>TextCell</code></i>.
+  Applications may create others.&nbsp; For some <i><code>GridObject</code></i> subclasses
+  it may  make sense to keep track of which direction the object is facing
+  (<i>e.g.</i>, north,
+  south,
+  east, west); the <i><code>Direction<sup>&#8225;</sup></code></i> class supports
+  this.&nbsp; Figure 1 above illustrates how to create a bounded grid containing
+  two grid objects, a color block and a text cell.&nbsp; Figure 2 illustrates
+  the inheritance  and component relationships among the key  classes for modeling
+  objects&nbsp; in a grid.</p>
+<pre>
+           Grid   ----- contains ------> GridObject  < ------ has-a -----  Location
+          /    \                            /    \
+         / is-a \                          / is-a \
+		/         \                        /        \
+ BoundedGrid  ArrayListGrid.Bounded   ColorBlock  TextCell
+</pre>
+<p>These classes that model a grid and its contents are  in the <code>edu.kzoo.grid</code> package.</p>
+<p><font color="#FF0000">[Provide link to page with more complete descriptions,
+    lists of all methods, and links to javadocs.&nbsp; Only model class not
+    mentioned so far is the <i><code>Active</code></i> class.]</font></p>
+<a name="Display"></a>
+<h3>Components for displaying objects in a grid</h3>
+<p>The Grid Package class library provides an interface, <i><code>GridDisplay</code></i>,
+  describing objects that know how to display a grid and its contents.&nbsp; Any
+  class that implements this interface must implement the <code>showGrid</code> method
+  that client code (or a graphical user interface) uses to display the grid.</p>
+<p>The
+  main class for displaying a grid and its contents
+  is the <i><code>ScrollableGridDisplay</code></i> class  (a display that can
+  be put in a scroll pane, making it scrollable).&nbsp; It extends the Java Swing
+  <i><code>JPanel</code></i> class, and so can be used as one of the components
+  of a graphical user interface.&nbsp; The example below shows how an application
+  can create and display a grid with two color blocks in it;  it does
+  not, however, show how to create a window containing the display.&nbsp; (For
+  a complete example, see <a href="#GUI">Components for creating graphical user
+  interfaces</a> or the <a href="ExampleSoureFiles/Example1.java"><i><code>Example1</code></i></a> class in the <code>ExampleSourceFiles</code> folder.)</p>
+<pre>    // Construct an object to display a grid.  Specify how to display
+    // ColorBlock objects.
+    GridDisplay display = new ScrollableGridDisplay();
+      <i>// code to add the display component to a window not shown</i>
+    DisplayMap.associate("edu.kzoo.grid.ColorBlock", new ColorBlockDisplay());
+
+    // Construct a grid in which to draw.  Add two color blocks.
+    Grid grid = new BoundedGrid(5, 5);
+    display.setGrid(grid);
+    grid.add(new ColorBlock(Color.RED), new Location(2, 1));
+    grid.add(new ColorBlock(Color.YELLOW), new Location(4, 3));
+
+    // Display the grid.
+    display.showGrid();</pre>
+<p>When sent a <code>showGrid</code> message,
+  a scrollable grid display object displays the grid's background color, calculates
+  the size of the grid display and the
+  size of the individual cells within the grid, creates scroll bars if necessary,
+  and
+  paints the grid lines.&nbsp; It then goes through the list of objects in the
+  grid and displays them.</p>
+<p>As in the Marine Biology Simulation program,
+  the Grid Package class library looks in a <i><code>DisplayMap<sup>&#8225;</sup></code></i> to
+  find out how to display the various types of objects in a grid.&nbsp; The <i><code>DisplayMap</code></i> is
+  a table associating <i><code>GridObject</code></i> subclasses
+  with objects that know how to display them, each of which must satisfy the <i><code>GridObjectDisplay</code></i> interface.&nbsp; For
+  any object in the grid, if the <i><code>DisplayMap</code></i> contains an entry
+  corresponding to that object's class, then the associated display object is
+  used.&nbsp; Otherwise, if there is a display object corresponding
+  to the grid object's superclass, that display object is used.&nbsp; This
+  continues up the class hierarchy for the grid object.&nbsp; If
+  the <i><code>DisplayMap</code></i> does not have a display object specified
+  for any class in the grid object's inheritance hierarchy, the grid display
+  will use a <i><code>DefaultDisplay<sup>&#8225;</sup></code></i> object, which
+  displays a question mark ('?').&nbsp; The application
+  is responsible for establishing the associations between the classes used for
+  grid objects and the
+  objects that know how to display them.&nbsp; In the example above,
+  the statement</p>
+<pre>    DisplayMap.associate("ColorBlock", new ColorBlockDisplay());</pre>
+<p>specifies that objects of the <i><code>ColorBlock</code></i> class should
+  be displayed using the given <i><code>ColorBlockDisplay</code></i> object.&nbsp;</p>
+<p>The list below shows the classes provided in the Grid Package class library
+  that can be used to display objects in a grid.&nbsp; In addition to
+  the <i><code>DefaultDisplay</code></i> class, there are classes to display
+  <i><code>ColorBlock</code></i> and <i><code>TextCell</code></i> objects
+  in a grid, classes to display image files (pictures in GIF and JPEG
+  format, for example), and abstract classes that can be extended to create new
+  displays that will be scaled to fit in a cell and rotated, if necessary.&nbsp; (Rotated
+  displays are useful if the objects in a grid keep track of their direction
+  as well as their location.&nbsp; <a href="ExampleSoureFiles/ColorObjWithDirection.java"><i><code>ColorObjWithDirection</code></i></a> and
+  <a href="ExampleSoureFiles/RotatedTintedExample.java"><i><code>RotatedTintedExample</code></i></a> in
+  the <code>ExampleSourceFiles</code> folder provide an example of an object
+  that keeps track of its direction, displayed by a <code>RotatedTintedImageDisplay</code>  object.)&nbsp; More
+  information on how to create classes for displaying objects in a grid can be
+  found in <a href="CreatingGridPkgDisplayClasses.html">Creating
+  Grid Package Display Classes</a>. <font color="#FF0000">[need to write such
+  a document.]</font></p>
+<ul>
+  <li><i><code>GridObjectDisplay</code></i> (interface for display objects
+    in a <i><code>DisplayMap</code></i>)
+          <ul>
+            <li><i><code>ScaledDisplay</code></i> (abstract class that provides methods
+              for scaling a display)
+                <ul>
+                  <li><i><code>DefaultDisplay</code></i> (displays a question mark,
+                    scaled to fit in a cell)
+                      <ul>
+                        <li><i><code>TextCellDisplay</code></i> (displays text in the
+                          appropriate cell)</li>
+                      </ul>
+                  </li>
+                  <li><i><code>ColorBlockDisplay</code></i> (paints the appropriate
+                    cell with the specified color)</li>
+                  <li><i><code>RotatedDisplay</code></i> (abstract class that provides
+                    methods for rotating a display)</li>
+                  <li><i><code>ScaledImageDisplay</code></i> (displays an image scaled
+                    to fit in the appropriate cell)
+                      <ul>
+                        <li><i><code>RotatedImageDisplay</code></i> (rotates and displays
+                          an image)</li>
+                        <li><i><code>TintedImageDisplay</code></i> (colors and displays
+                          an image)
+                            <ul>
+                              <li><i><code>RotatedTintedImageDisplay</code></i> (rotates,
+                                colors, and displays an image)</li>
+                            </ul>
+                        </li>
+                      </ul>
+                  </li>
+                </ul>
+            </li>
+          </ul>
+  </li>
+</ul>
+<p>[Here's a weak attempt at a diagram:]</p>
+<pre>
+  Client code -------> ScrollableGridDisplay   ----- asks for assoc. ------> DisplayMap
+               calls               \            --> grid object class name
+              showGrid              \           <-- display object for that class
+                                     \
+                                      \ asks to display grid object
+                                       \
+                                   GridObjectDisplay
+</pre>
+<p>The classes for displaying a grid and its contents are  in the <code>edu.kzoo.grid.display</code> package.</p>
+<p><font color="#FF0000"></font></p>
+<p><a name="GUI"></a></p>
+<h3>Components for creating graphical user interfaces</h3>
+<h4>Creating passive grid applications (grids as illustrations)</h4>
+<p>The Grid Package class library provides several classes that implement graphical
+  user interfaces for grid-based applications.&nbsp; These are found in the <code>edu.kzoo.grid.gui</code>  package.&nbsp; The
+  basic GUI class is <i><code>GridAppFrame</code></i>.&nbsp; The
+  simplest type of object of this class merely creates a window containing a <i><code>ScrollableGridDisplay</code></i>.&nbsp; Two
+  steps are necessary: the application must create a <i><code>GridAppFrame</code></i> object
+  and then send it a <code>constructWindowContents</code> message, specifying
+  a phrase to appear in the title bar, the grid background color, the width and
+  height of the window,
+  and the minimum size of an individual grid cell.&nbsp; The last three values
+  (window width and height and minimum grid cell size) are expressed in pixels.</p>
+<pre>    String TITLE = "Example GUI";
+    Color BACKGROUND_COLOR = Color.BLUE;
+    int MAX_WIDTH = 600;      // in pixels
+    int MAX_HEIGHT = 600;     // in pixels
+    int MIN_CELL_SIZE = 10;   // in pixels
+
+    GridAppFrame gui = new GridAppFrame();
+    gui.constructWindowContents(TITLE, BACKGROUND_COLOR, 
+                                MAX_WIDTH, MAX_HEIGHT, MIN_CELL_SIZE);</pre>
+<p>The <i><code>GridAppFrame</code></i> class itself implements the <i><code>GridDisplay</code></i> interface,
+  with a <code>showGrid</code> method that merely passes the responsibility on
+  to its <i><code>ScrollableGridDisplay</code></i>  method.&nbsp; Thus, we can
+  create a complete application that 
+  displays a grid containing two color blocks simply by adding the following
+  code.</p>
+<pre>    // Specify how to display color blocks.
+    DisplayMap.associate("edu.kzoo.grid.ColorBlock", new ColorBlockDisplay());
+
+    // Construct a grid in which to draw.  Add two color blocks.
+    Grid grid = new BoundedGrid(5, 5);
+    gui.setGrid(grid);
+    grid.add(new ColorBlock(Color.RED), new Location(2, 1));
+    grid.add(new ColorBlock(Color.YELLOW), new Location(4, 3));
+
+    // Display the grid.
+    gui.showGrid();</pre>
+<p><a href="ExampleSoureFiles/Example1.java"><i><code>Example1</code></i></a> in
+  the <code>ExampleSourceFiles</code>  folder
+  is very similar to this, but displays several <i><code>TextCell</code></i> and
+  <i><code>ColorBlock</code></i> objects
+in a bounded grid in a format to suggest a simple, labelled histogram. <a href="ExampleSoureFiles/Example1a.java"><i><code>Example1Alt</code></i></a> is
+functionally equivalent to <a href="ExampleSoureFiles/Example1.java"><i><code>Example1</code></i></a>,
+but uses an alternative form for constructing
+objects
+in a grid that is also used in the AP<sup>&reg;</sup> MBS case study.</p>
+<h4>Creating animated grid applications</h4>
+<p>The <i><code>GridAppFrame</code></i> class
+has several methods, such as <code>includeMenu</code> and <code>includeSpeedSlider</code>,
+for specifying additional features before the <code>constructWindowContents</code> message
+is sent.&nbsp; For
+example, the following code would create a graphical user interface for an
+animation, with a window containing a scrollable grid display, a minimal file menu with a Quit
+option only, and a slider bar controlling the speed of the animation (actually the length
+of the pause after each display of the grid contents).</p>
+<pre>    // Construct a window to display an animation in a grid.
+    GridAppFrame gui = new GridAppFrame();
+    gui.includeMenu(new MinimalFileMenu());  // see note below
+    gui.includeSpeedSlider();   // optional parameters customize slider range
+    gui.constructWindowContents(TITLE, BACKGROUND_COLOR, 
+                                MAX_WIDTH, MAX_HEIGHT, MIN_CELL_SIZE);</pre>
+<p>(Note: <i><code>MinimalFileMenu</code></i> is in the <code>edu.kzoo.grid.gui.nuggets</code> package.)</p>
+<p>An application that fills
+    the grid with color blocks provides a very simple example of an animation.&nbsp; After
+    specifying in the display map how to display color blocks and after constructing
+    a grid, the application displays the initial, empty grid and then fills it
+    with color blocks, redisplaying the grid each time.</p>
+<a name="fillWithColorBlocks"></a>
+<pre>    gui.showGrid();
+    for ( int row = 0; row < grid.numRows(); row++ )
+    {
+        for ( int col = 0; col < grid.numCols(); col++ )
+        {
+            grid.add(new ColorBlock(Color.RED), new Location(row, col));
+            gui.showGrid();
+        }
+    }</pre>
+<p> <a href="ExampleSoureFiles/Example2.java"><i><code>Example2</code></i></a> in
+  the <code>ExampleSourceFiles</code> folder
+  implements another simple animation using the graphical user interface
+  above.&nbsp; In the <a href="ExampleSoureFiles/Example2.java"><i><code>Example2</code></i></a> animation,
+  a queen moves diagonally
+  on a
+  single-colored
+  chessboard, from one location to the location below it and to the
+     right. (We could
+  use
+  color
+  blocks
+  to create
+  a black-and-white
+  chessboard,
+  but unfortunately
+  we 
+    wouldn't be able to put any chess pieces on it, since we cannot have both
+     a color block and a chess piece in the same location of a grid.)&nbsp; When
+     the queen reaches the last row or column, she cycles back tolocation (0,
+     0).&nbsp; This<code></code> application
+     uses a <code><i>BoundedGrid</i></code> object to represent the chessboard
+     and a generic <code><i>GridObject</i></code> object,
+     which merely keeps track of its current location, to represent the queen.
+     The application &quot;moves&quot; a queen by removing it from the board and
+     adding a new <i><code>GridObject</code></i> instance to the grid at the
+     new location. It displays the queen graphically using an image of a crown.&nbsp; The
+  key steps for implementing the animation are:</p>
+<ul>
+  <li>Construct a graphical user interface with a simple File menu, a grid display,
+    and a speed adjustment slider using the code above.</li>
+  <li>Specify how to display a queen on the chessboard with a call to <code>DisplayMap.associate</code>.</li>
+  <li>Construct a grid to represent the chessboard.</li>
+  <li>Move the queen one step at a time, displaying the chessboard after each
+  step.</li>
+</ul>
+<p>A step in this simple example is a move to the cell below and to the right
+  of the current cell. &nbsp; Moving the queen  in this case means removing
+her from her cell and putting a new queen in the next cell.
+<h4>Creating grid applications driven by control buttons</h4>
+<p>The Grid Package supports two types of user-driven applications.&nbsp; One
+  type allows users to control an application through a set of  buttons.&nbsp; The
+  <i><code>GridAppFrame</code></i> class provides an <code>includeControlComponent</code>  method
+  for putting buttons and other components in a control panel to the left of
+  the grid display.</p>
+<p>Several
+  buttons and other simple components are provided in the <code>edu.kzoo.grid.gui.nuggets</code> package.
+  For example, a <i><code>NewBoundedGridButton</code></i> object brings up a
+  dialog box that prompts the user for the number of rows and columns, and then
+  creates
+  a new <i><code>BoundedGrid</code></i> object
+  with the specified dimensions.&nbsp; A <i><code>ColorChooser</code></i> component
+  provides a drop-down menu from which a user can select a color; a <i><code>BGColorChooser</code></i> changes
+  the background color of the
+  grid based on the current color choice.&nbsp; A <i><code>ClearGridButton</code></i> object
+  removes all objects from the grid.&nbsp; The example below creates a user interface
+  with components that allow a user to construct a grid, change its background
+  color, and remove any objects that might be in it.</p>
+<pre>    // Construct a window with a new grid button, a background color
+    // chooser, and a clear grid button.
+    boolean ENABLE_WHEN_WAITING = EnabledDisabledStates.NEEDS_APP_WAITING;
+    boolean NEEDS_GRID = EnabledDisabledStates.NEEDS_GRID_AND_APP_WAITING;
+    boolean DISPLAY_GRID_AFTER_CLEARING = true;
+
+    GridAppFrame gui = new GridAppFrame();
+    ThreadedControlButton
+            newGridButton = new NewBoundedGridButton(gui, "New Grid"),
+            newClearButton = new ClearGridButton(gui, "Empty Grid",
+                                                 DISPLAY_GRID_AFTER_CLEARING);
+    ColorChooser bgColorChooser = new BGColorChooser(gui);
+    gui.includeControlComponent(newGridButton, ENABLE_WHEN_WAITING);
+    gui.includeControlComponent(bgColorChooser, ENABLE_WHEN_WAITING);
+    gui.includeControlComponent(newClearButton, NEEDS_GRID);
+    gui.constructWindowContents(TITLE, bgColorChooser.currentColor(),
+                                MAX_WIDTH, MAX_HEIGHT, MIN_CELL_SIZE);</pre>
+<p>The <code>includeControlComponent</code> method takes two parameters: the
+  component itself and an indicator of when the component should be enabled (clickable)
+  or disabled (grayed-out and not clickable).&nbsp; The <i><code>EnabledDisabledStates</code></i>  class
+  defines a set of constants describing a range of enabled/disabled criteria,
+  including <code>NEEDS_APP_WAITING</code> and <code>NEEDS_GRID_AND_APP_WAITING</code>.&nbsp; The
+  first of these indicates that the component should be enabled whenever the
+  application is ready and waiting for user input, as opposed to actively executing
+  a button
+  action, for example. The second indicates that the component requires
+  a defined grid.&nbsp; Thus, the &quot;New Grid&quot; button is enabled when the
+  user interface is first created but the &quot;Empty Grid&quot; button is not enabled
+  until after a grid has been created.&nbsp; Both buttons become disabled while
+  other button actions are being processed.</p>
+<p>In addition to using the classes provided in the <code>edu.kzoo.grid.gui.nuggets</code>  package,
+  it is relatively easy to create a new control button.&nbsp; The
+  abstract
+  <i><code>ThreadedControlButton</code></i> class provides the basic infrastructure
+  for creating a control button that runs in a separate thread, enabling and
+  disabling other components appropriately as it runs.&nbsp; It also provides
+  the option to display the grid after executing the button action.&nbsp; Executing
+  the button action in a separate thread means that certain other user interface
+  activities,
+  such as updates to the display and changes to the slider bar, may happen concurrently
+  without waiting for the button action to complete.&nbsp; Subclasses of <i><code>ThreadedControlButton</code></i> must
+  define their constructor(s) and implement the abstract <code>act</code> method,
+  which performs the core button action.&nbsp; The following <i><code>ThreadedControlButton</code></i>  subclass
+  resets the graphical user interface by setting the grid back to null and resetting
+  the speed slider bar back to its initial value.&nbsp; Similarly, one could
+  create a <i><code>FillButton</code></i> subclass whose act method would fill
+  the grid with color blocks using code similar to that provided <a href="#fillWithColorBlocks">above</a>   in
+  the section on
+  creating animated grid applications.</p>
+<pre>    public class ResetButton extends ThreadedControlButton
+    {
+        private boolean DISPLAY_AFTER_RESET = true;
+
+        public ResetButton(GridAppFrame gui)
+        {
+            super(gui, "Reset", DISPLAY_AFTER_RESET);
+        }
+
+        public void act()
+        {
+            getGUI().setGrid(null);
+            getGUI().resetDelay();
+        }
+    }</pre>
+<p><a href="ExampleSoureFiles/Example3.java"><i><code>Example3</code></i></a> in
+  the <code>ExampleSourceFiles</code> folder uses  code similar to that
+    found in this section to create an application in which users can create
+  a new grid, set the background and fill colors, fill the grid with color blocks,
+  clear out the contents of the grid, or reset the user interface as above.&nbsp; <a href="ExampleSoureFiles/Example3.java"><i><code>Example3</code></i></a> also
+  includes a <i><code>MinimalFileMenu</code></i> and a <i><code>BasicHelpMenu</code></i>  object that provides information about
+  the application, such as the author and version.</p>
+<p>Example 4, which consists of
+  three classes: <a href="ExampleSoureFiles/Example4App.java">Example4App</a>, <a href="ExampleSoureFiles/Example4GUI.java">Example4GUI</a>,
+  and <a href="ExampleSoureFiles/Example4AppControl.java">Example4AppControl</a>,
+  provides another example of an application with control buttons.&nbsp; Example
+  4 provides a &quot;New
+  Grid&quot; button
+  and a customized
+  &quot;Start&quot; control
+  button
+  that, in
+  this
+  case, moves
+  a queen
+  down
+  the
+  diagonal of a chessboard 10 times.&nbsp; Thus, apart from its use of control
+  buttons, this example is functionally similar to <a href="ExampleSourceFiles/Example2.java">Example2</a>.&nbsp; The
+  more significant difference, though, is in its implementation, which separates
+  the
+  graphical user interface from the application control.&nbsp; <a href="ExampleSoureFiles/Example4GUI.java">Example4GUI</a> is
+  pure interface code, with no knowledge of the application it is running.&nbsp; It
+  delegates that responsibility to <a href="ExampleSoureFiles/Example4AppControl.java">Example4AppControl</a> by
+  having the &quot;Start&quot; button (another <i><code>ThreadedControlButton</code></i> subclass,
+  although this time implemented as an anonymous inner class) call the control
+  class's <code>runAnimation</code> method,
+  which handles moving the queen in the grid.&nbsp; The
+  user interface class doesn't even know that what kind of grid object it is
+  dealing with or how to display it; the call to <code>DisplayMap.associate</code> is
+  in the main method in <a href="ExampleSoureFiles/Example4App.java">Example4App</a> along
+  with one line of code to construct  the graphical user interface object.&nbsp; The
+  usual calls to the <code>include...</code> and <code>constructWindowContents</code> methods
+  are in the <a href="ExampleSoureFiles/Example4GUI.java">Example4GUI</a> constructor.</p>
+<h4>Generating buttons automatically from the methods of a class</h4>
+<p>The Grid Package
+  provides a way to automatically generate <i><code>ThreadedControlButton</code></i> buttons
+  from the methods of a class.&nbsp; Consider, for example, a <i><code>PatternMaker</code></i> class
+  that has a set of &quot;drawing&quot; methods, each of which puts a different
+  pattern of color blocks in the grid.&nbsp; Each drawing method takes a <i><code>Color</code></i> object
+  as a parameter, to indicate the color of the blocks to place, and has a <code>void</code> return
+  type.&nbsp; To generate a set of buttons corresponding to these drawing methods,
+  construct a <i><code>GeneratedButtonList</code></i> object, passing it a <i><code>PatternMaker</code></i>  object
+  to which messages can be sent and an array of arguments to send with each message
+  (in this case, an array containing only a <i><code>Color</code></i> object.)&nbsp; Then
+  pass the generated list to the <code>includeControlComponents</code> method
+  (note the plural) in the graphical user interface.&nbsp; The <code>includeControlComponents</code> method
+  will add each generated button in the list to the control panel in the graphical
+  user interface.&nbsp; When an automatically-generated button is pressed, it
+  invokes the corresponding method on the target object (in this case the <i><code>PatternMaker</code></i>  object),
+  passing it the argument(s) provided to the <i><code>GeneratedButtonList</code></i> object
+  when it was constructed.&nbsp; It may also redisplay the grid and its contents
+  after the button action is complete, depending on the value of the last parameter
+  to the <i><code>GeneratedButtonList</code></i> constructor, <code>displayAfterButtonPresses</code>.</p>
+<p>Usually the automatically-generated buttons have the same names as their associated
+  method; a <code>drawBox</code> method will generate a button labeled &quot;drawBox.&quot;&nbsp; If
+  the method name matches the special <code>on...ButtonClick</code> format, though,
+  the button label will consist of the interior substring; an <code>onDrawCircleButtonClick</code>  method
+  will generate a button labeled &quot;DrawCircle&quot; rather than &quot;onDrawCircleButtonClick.&quot;&nbsp; It
+  is also possible to reset the label on a button using the <code>resetButtonLabel</code>  method in <i><code>GeneratedButtonList</code></i>.</p>
+<p>The <a href="ExampleSoureFiles/Example5App.java">Example5App</a>,
+<a href="ExampleSoureFiles/Example5AppControl.java">Example5AppControl</a>, and
+<a href="ExampleSoureFiles/Exampl57ColorChoiceMenu.java">Example5ColorChoiceMenu</a> classes
+in
+the <code>ExampleSourceFiles</code> folder provide an example of  an application,
+some of whose control buttons are drawing buttons that were automatically generated
+from
+methods
+in
+the <a href="ExampleSoureFiles/Example5AppControl.java">Example5AppControl</a>
+class.&nbsp; The <a href="ExampleSoureFiles/Example5ColorChoiceMenu.java">Example5ColorChoiceMenu</a> class
+provides a drop-down menu from which to choose the color of the
+color blocks being placed in the grid.&nbsp; When the user selects a different
+color the <a href="ExampleSoureFiles/Example5ColorChoiceMenu.java">Example5ColorChoiceMenu</a> object
+changes the value of the <i><code>Color</code></i> object in the array of method
+arguments passed to the automatically-generated control buttons.</p>
+<h4>Creating grid applications driven by Step/Run/Stop control buttons</h4>
+<p>The control buttons in the preceding section are appropriate for tasks as
+  units, in which clicking on a button initiates a task that continues until
+  it is complete.&nbsp; Some applications, though, are better represented as
+  an ongoing cycle of repeating tasks.&nbsp; For example, a simulation might
+  consist of a sequence of timesteps.&nbsp; The Grid Package allows users to
+  control such an application through a choice
+  of
+  Initialize, Step,
+  NSteps,
+  Run,
+  and Stop buttons provided by the <i><code>SteppedGridAppFrame</code></i> subclass
+  of <i><code>GridAppFrame</code></i>.&nbsp; The set of control buttons
+ that are visible on any particular <i><code>SteppedGridAppFrame</code></i> graphical
+ user interface depends on the <code>include...</code> messages sent to it before
+ the application constructs the window contents.&nbsp; Although the <i><code>SteppedGridAppFrame</code></i> object
+ provides the specified control buttons, it does not know what actions the application
+ should perform in response to them.&nbsp; For this, it requires  that the application
+ define a controller class (a subclass of the abstract <i><code>SteppedGridAppController</code></i> class). &nbsp; The <i><code>SteppedGridAppFrame</code></i> object
+relies on
+the controller object to know how to initialize or restart
+the
+application,
+what
+actions
+to perform
+in a single step, and what the criteria are for stopping a running application.&nbsp; The
+user-defined controller class implements these behaviors in redefined <code>init</code>, <code>step</code>,
+and <code>hasReachedStoppingState</code> methods, respectively.&nbsp; (All <i><code>SteppedGridAppController</code></i> subclasses
+must implement the <code>step</code> method, but may leave out the <code>init</code> method
+if there is no Initialize button or leave out the <code>hasReachedStoppingState</code> method
+if there are no set criteria for stopping a running application.)</p>
+<p>The following example is a stepped variation of the program
+  that moves
+  a queen
+  down
+  the
+  diagonal of a chessboard 10 times. The graphical user interface provides Step
+  and Restart buttons but relies on the <i><code>QueenAnimation</code></i> controller
+  class to define how a queen moves in each step and how to re-initialize the
+  board.&nbsp; Although
+  it would be possible to create a <i><code>Queen</code></i> class with a <code>move</code> method,
+  this application, like the previous examples, uses a generic <i><code>GridObject</code></i> instance
+  to represent a queen, displays it with an image of a crown, and &quot;moves&quot; it
+  by removing it from the board and adding a new <i><code>GridObject</code></i> instance
+  to the grid at the new location.</p>
+<blockquote><b>Code to create the controller and graphical user interface:</b>
+    <pre>boolean DISPLAY_AFTER_EACH_STEP = true;
+boolean NEEDS_GRID = EnabledDisabledStates.NEEDS_GRID_AND_APP_WAITING;
+boolean RESTART_INITIALLY_ENABLED = false;
+boolean DISPLAY_AFTER_RESTART = true;
+
+QueenAnimation controller = new QueenAnimation();
+
+SteppedGridAppFrame gui =
+         new SteppedGridAppFrame(controller, DISPLAY_AFTER_EACH_STEP);
+gui.includeStepOnceButton();
+gui.includeSetResetButton("Restart", NEEDS_GRID,
+                    RESTART_INITIALLY_ENABLED, DISPLAY_AFTER_RESTART);
+<i>// include a New Grid button, Step and Run buttons, and a speed slider;
+// then construct window contents in the usual way</i>
+DisplayMap.associate("edu.kzoo.grid.GridObject",
+					 new ScaledImageDisplay("GoldCrown.gif"));</pre>
+<b>Key code from the </b> <i><code>QueenAnimation</code></i> <b>class:</b>
+<pre>private Location currentQueenLoc;
+
+public void init()
+{   // If a queen is already on the board, remove her.
+    // Insert new queen at location (0, 0).
+    getGrid().remove(currentQueenLoc);
+    queenLoc = new Location(0, 0);
+    new GridObject(getGrid(), currentQueenLoc);
+}
+
+public void step()
+{   // Remove queen from current location; insert new queen
+    // to the lower-right or back at location (0, 0).
+    getGrid().remove(currentQueenLoc);
+    int newRowCol = (currentQueenLoc.row() + 1) % getGrid().numRows();
+    currentQueenLoc = new Location(newRowCol, newRowCol);
+    new GridObject(getGrid(), currentQueenLoc);
+}</pre>
+</blockquote>
+<p>Note that the <code>step</code> method in this example assumes that the grid
+  is square, or at least
+that the number of rows is not greater than the number of columns.&nbsp; <a href="ExampleSoureFiles/Example6App.java"><i><code>Exampl65App</code></i></a> and
+the <a href="ExampleSoureFiles/Example6SteppedController.java"><i><code>Example6SteppedController</code></i></a> class
+in the <code>ExampleSourceFiles</code> folder provide a complete implementation
+  for this simple animation, including  an NSteps button, which
+lets the user run the application for a set number of steps.</p>
+<h4>Creating grid applications driven by mouse clicks in grid cells</h4>
+<p>A different type of user-driven application supported by the Grid Package
+  allows users to control an application with mouse-clicks in various grid
+  cells.&nbsp; This requires creating a <i><code>GridAppFrame</code></i> subclass
+  that redefines the <code>onMousePressOverDisplay</code> method.&nbsp; This
+  method takes 
+  as a parameter the  location of the grid cell in which the mouse has been pressed.&nbsp; The
+  version of the method in <i><code>GridAppFrame</code></i> does nothing, but
+  subclasses can redefine it to provide mouse-driven behavior.&nbsp; For
+  example, the following <i><code>MouseDrivenGUI</code></i> class illustrates
+  a graphical user interface that either adds an object
+  to the specified location in the grid if a user clicks on an empty grid
+  cell, or removes an object from the specified location if a user clicks
+on a cell containing an object.</p>
+<pre>    public class MouseDrivenGUI extends GridAppFrame
+    {
+        protected void onMousePressOverDisplay(Location loc)
+        {
+            if ( getGrid().isEmpty(loc) )
+                getGrid().add(new GridObject(), loc);
+            else
+                getGrid().remove(loc);
+            showGrid();
+        }
+    }</pre>
+<p><a href="ExampleSoureFiles/Example7GUI.java"><i><code>Example7GUI</code></i></a>  in
+  the <code>ExampleSourceFiles</code> folder uses  code similar to this to create
+  a mouse-driven application in which a user can add queens to, or remove them
+  from, a chessboard.&nbsp; It also includes a file menu with a Quit option and
+  a New Grid button.&nbsp; The <code>main</code> method for Example 6, which
+  merely constructs the graphical user interface, is included in the <a href="ExampleSoureFiles/Example7GUI.java"><i><code>Example7GUI</code></i></a> class.</p>
+<p>&nbsp;</p>
+<h2><a name="Compiling"></a>Compiling and running with the Grid Package class
+  library</h2>
+<p>The classes you need to use the Grid Package class library are provided in
+  a single Java archive file, <code>grid.jar</code>.&nbsp; Exactly how you compile
+  and run your Java source files with this archive file depends
+  on the development environment you are using.&nbsp; For
+  example, the UNIX command-line statement would be:</p>
+<pre><code>    javac -classpath .:./grid.jar MyMainClass.java AnotherClass.java
+    java -classpath .:./grid.jar MyMainClass</code></pre>
+<p><font color="#FF0000">[Say something about where images need to be put.]</font></p>
+<h2></h2>
+<hr>
+<hr>
+<p>Everything below here is from the previous version of this overview.</p>
+<hr>
+<hr>
+<p><font color="#FF0000"></font></p>
+<h3>Examples Using Predefined Grid Package Library Classes</h3>
+<blockquote>
+  <p>The fifth example illustrates the use of rotated, tinted images.&nbsp; This
+     example uses the MBS <code>Fish</code> class, whose objects keep track of
+      their direction as well as their location.</p>
+  <ul>
+    <li>Construct the bounded environment and its GUI display</li>
+    <li>Specify how to display a fish in the environment</li>
+    <li>Add fish to the environment facing various directions</li>
+    <li>Display the environment</li>
+  </ul>
+  <p>The corresponding code is below. The direction provided to the <code>RotatedTintedImageDisplay</code> 
+    constructor specifies the direction the object is facing in the original image.
+  <pre><code>    BoundedEnv env = new BoundedEnv(NUM_ROWS, NUM_COLS);
+    
+    SettableEnvDisplay display =<br>        new EnvAppFrame(&quot;Example 4&quot;, BACKGROUND_COLOR,
+                        MAX_WIDTH, MAX_HEIGHT, MIN_CELL_SIZE);
+    display.setEnv(env);
+    DisplayMap.associate(&quot;Fish&quot;,
+                         new RotatedTintedImageDisplay(&quot;smallfish.gif&quot;,
+                                                       Direction.EAST));
+
+    new Fish(env, new Location(3, 3), Direction.EAST, Color.red);
+    new Fish(env, new Location(4, 4), Direction.SOUTH, Color.green);
+    new Fish(env, new Location(5, 5), Direction.WEST, Color.yellow);
+    new Fish(env, new Location(6, 6), Direction.NORTH, Color.cyan);
+    
+    display.showEnv();</code></pre>
+</blockquote>
+<p>&nbsp;</p>
+<h2><a name="Extending"></a>Extending Grid Package Library classes</h2>
+<h3>Creating New Types of Environment Objects</h3>
+<blockquote> 
+  <p>Objects that may be placed in an environment must satisfy the <i><code>Locatable</code></i> 
+    interface, so the first step in creating a new environment object class is 
+    to implement <i><code>Locatable</code></i>. If objects of the new class should 
+    always be in an environment, then they should add themselves to their environment 
+    when they are constructed, as <code>ColorBlock</code> and <code>TextCell</code> 
+    do.&nbsp; Non-trivial environment object classes should use the MBS <code>Fish</code> 
+    class as a template.&nbsp; The <code>Fish</code> class models several important 
+    behaviors:&nbsp; a fish adds itself to the environment when it is constructed, 
+    it keeps track of its location (as all <i><code>Locatable</code></i> objects 
+    do), it checks that it is still in the environment before acting, and it records 
+    any changes in its location with the environment.&nbsp; See pp. 33 and 39 
+    of the MBS case study document to learn more about the importance of maintaining 
+    a fish's view of its location and the environment's view of the fish's location 
+    in a consistent manner. </p>
+</blockquote> 
+  
+<h3>Creating New Display Classes</h3>
+  <blockquote> 
+    
+  <p>[Introduce GridDisplay interface, since it isn't mentioned above.]</p>
+  <p>The <code>ScrollableEnvDisplay</code> class is written very generically,
+    and it may not be necessary to extend that class.&nbsp; You also may find
+    that the predefined classes are sufficient if you plan to use images to display
+    objects in the environment, since the predefined classes handle scaling the
+    image to fit the environment cell size, rotating images to match an object's
+    direction (if the object has an MBS <code>Direction</code> attribute), and
+    tinting images to reflect an object's color.&nbsp; <font color="#FF0000">[Point 
+    out an example that scales, rotates, and tints the grumpy fish?]</font></p>
+  <p>If, however, you wish to display an environment object using Java graphics 
+    code, you will need to create a new display class.&nbsp; It should extend 
+    the <code>ScaledDisplay</code> class and then provide a three-parameter draw 
+    method that draws the object, assuming that the drawing surface is a 1 x 1 
+    cell centered around point (0, 0).&nbsp; In other words, the corners of the 
+    drawing surface are (-0.5, -0.5), (0.5, -0.5), (0.5, 0.5), (-0.5, 0.5).&nbsp; 
+    Some things are difficult to draw at that size, in which case you can scale 
+    the Graphics2D drawing surface up, do the drawing, and then scale it back 
+    down.&nbsp; To work in a 10 x 10 cell whose corners are at (-5, -5), (5, -5), 
+    (5, 5), (-5, 5), you would do the following:</p>
+  <pre><code>    int scalingFactor = 10;
+    g2.scale(1.0/scalingFactor, 1.0/scalingFactor);
+    // draw in the 10 x 10 cell
+    g2.scale(scalingFactor, scalingFactor);</code></pre>
+  <p><font color="#FF0000">[<code>FishDisplay</code> provides an example of Graphics2D 
+    if GenericMBS is part of the distribution.]</font></p>
+  </blockquote>
+<h3>Creating Customized Graphical User Interfaces</h3>
+<blockquote> 
+  <p>The easiest way to create a graphical user interface for an environment application 
+    is to extend one of the three predefined user interfaces, <code>EnvAppFrame</code>, 
+    <code>EnvFrameWithSlider</code>, or <code>ActiveEnvFrame</code>.&nbsp; This 
+    requires understanding the structure of the <code>EnvAppFrame</code> superclass.&nbsp; 
+    Most of the methods in the class are devoted to creating the menus, panels, 
+    buttons, and display of the graphical user interface.&nbsp; <code>EnvAppFrame</code> 
+    makes extensive use of inheritance and dynamic binding (and a design technique 
+    called the Template Method pattern) to support the most customization with 
+    the least amount of new or repeated code.&nbsp; Unfortunately, this technique 
+    does not work well in constructors, so most of the work in creating the components 
+    of the graphical user interface is done in the <code>init</code> method (and 
+    the other methods it calls).</p>
+  <p>From the high-level point of view of the <code>init</code> method, the graphical 
+    user interface consists of two pieces: a menu bar (which might, in fact, be 
+    empty) and the window contents (the environment display and any buttons or 
+    other components).&nbsp; <img src="images/EnvAppFrame.init.jpg" align="left"> 
+    The <code>init</code> method calls the <code>makeMenus</code> method to define 
+    the menu bar and the <code>defineContent</code> method to define everything 
+    that appears in the window pane.&nbsp; The default behavior is not to have 
+    a menu bar, so the <code>makeMenus</code> method does not do anything, but 
+    the <code>EnvAppFrame</code> class still provides straight-forward <code>makeMenuBar</code> 
+    and <code>makeFileMenu</code> methods.&nbsp; A subclass can redefine the <code>makeMenus</code> 
+    method to call them, or provide methods for creating other menus.&nbsp;(<a href="#FileIO">See 
+    below for information about classes for handling file I/O</a>.)</p>
+  <p>The <code>defineContent</code> method defines the contents of everything 
+    in the window other than the menu bar.&nbsp; For example, it could define 
+    the graphical display of the environment, control buttons, and so on.&nbsp; 
+    The base <code>EnvAppFrame</code> class, though, merely calls <code>makeDisplayPanel</code>, 
+    which is responsible for the graphical display of the environment and any 
+    related components.&nbsp; The <code>EnvAppFrame</code> graphical user interface 
+    doesn't provide any additional components, so its <code>makeDisplayPanel</code> 
+    method simply calls the <code>makeEnvDisplay</code> method, which sets up 
+    a scrolling pane in which to put the display.&nbsp; The <code>makeEnvDisplay</code> 
+    method could create the <code>ScrollableEnvDisplay</code> (the object that 
+    knows how to display an environment) too, but instead it calls the <code>makeDisplay</code> 
+    method to do that.&nbsp; This makes it easier for a subclass to use a substitute 
+    scrollable display object; the subclass would merely redefine the <code>makeDisplay</code> 
+    method, without having to rewrite any of the code that sets up the scroll 
+    pane and its viewport (an object of the MBS <code>PseudoInfiniteViewport</code> 
+    class).&nbsp; </p>
+  <p>The diagram below shows how the <code>EnvFrameWithSlider</code> and <code>ActiveEnvFrame</code> 
+    classes redefine methods to provide more functionality.&nbsp; The <code>EnvFrameWithSlider</code> 
+    class redefines the <code>makeDisplayPanel</code> method to call <code>makeSliderPanel</code> 
+    in addition to <code>makeEnvDisplay</code>.&nbsp; The <code>makeSliderPanel</code> 
+    method makes a panel with both a display and a slider bar.&nbsp; The <code>ActiveEnvFrame</code> 
+    class redefines the <code>defineContent</code> method to call <code>makeRunButtons</code>, 
+    which creates a panel of control buttons (step, run, stop, and so on) to the 
+    left of the display/slider panel.</p>
+  <p> <img src="images/RedefinedGUIMethods.jpg" width="600"></p>
+  <p>In addition to these methods, which create the graphical components of the 
+    user interface, the <code>EnvAppFrame</code> class has a handful of other 
+    methods, such as those to set and show the environment, which the <code>EnvFrameWithSlider</code> 
+    and <code>ActiveEnvFrame</code> classes inherit or redefine.&nbsp; For example, 
+    the <code>EnvFrameWithSlider</code> class redefines the <code>showEnv</code> 
+    method to pause after displaying the environment based on the value of the 
+    speed adjustment slider (<code>getDelay</code>).&nbsp; The <code>ActiveEnvFrame</code> 
+    class also redefines several methods, and adds new methods for the various 
+    control buttons.</p>
+  <p>To develop a customized graphical user interface, a developer can inherit 
+    from any of the three pre-defined GUI classes and redefine methods, or add 
+    new methods, as necessary.&nbsp; As mentioned above, these classes exploit 
+    dynamic binding to allow subclasses to customize the appearance and functionality 
+    of the graphical user interface while reusing as much code as possible, but 
+    dynamic binding does not work well in constructors. In particular, methods 
+    called from a superclass constructor will not dynamically bind to a subclass, 
+    since that aspect of the object has not been fully constructed yet.&nbsp; 
+    This means that the <code>init</code> method, which exploits dynamic binding, 
+    should only be called by the &quot;last&quot; constructor (the constructor 
+    of the &quot;lowest&quot; subclass), after the object has been fully constructed, 
+    not by a superclass constructor. This means that each class in the class hierarchy 
+    must have at least one default or minimal constructor that can be called by 
+    subclasses (and which does not call <code>init</code>), as well as the constructor(s) 
+    available to client code, which do call the <code>init</code> method.</p>
+  <p><font color="#FF0000">[To use or customize ActiveEnvFrame, an application 
+    must create a subclass of the abstract EnvAppController class and, at the 
+    very least, define the step method.&nbsp; Say more about this.]</font></p>
+  <p><font color="#FF0000">[Also, forgot all about EnvEditor.]</font></p>
+  <h4><a name="FileIO"></a>Supporting a File Menu with File I/O:</h4>
+  <p>From here on down I just have notes to myself about what needs to go here.</p>
+  <p><code>EnvController</code> (supports File menu; handles opening and saving 
+    files, creating a new environment, etc.) &amp; <code>EnvDataFileHandler</code> 
+    (abstract? file handler for reading environment configuration information)&nbsp; 
+    &amp; <code>EnvFileChooser</code> (dialog box for choosing appropriate file 
+    for opening or closing)&nbsp; (The <code>EnvFileChooser</code> class in the 
+    Grid Package class library is a slightly modified version of the 
+    <code>EnvFileChooser</code> class in the MBSGUI class library.&nbsp; The main 
+    difference between them is that the Generic Environment version does not require 
+    applications to register the available environment representations with the 
+    <code>MBSFactory</code> if the only environments the application uses are 
+    <code>BoundedEnv</code> and <code>UnboundedEnv</code>.)</p>
+  <h4>Allowing Users to Create and Edit Environments:</h4>
+  <p><code>CreateEnvDialog</code> (dialog for creating a new environment; used 
+    to get dimensions for bounded environment or to get choice of environment 
+    (and possibly dimensions also)) &amp; <code>EnvChoiceComboBox</code> (extends 
+    <code>JComboBox</code> for choosing an environment representation)&nbsp; (The 
+    <code>CreateEnvDialog</code> class in the Grid Package class library 
+    is based on, but not exactly the same as, the <code>CreateEnvDialog</code> 
+    class in the MBSGUI class library.)</p>
+<ul>
+    <li>Examples: EnvPlotter (user can create new bounded environments, choosing 
+      dimensions) and GenericMBS (user can create new bounded or unbounded environments; 
+      may have choice of multiple representations of each type if program uses 
+      <b> <code>MBSFactory</code></b>)</li>
+</ul>
+  <p><code>EnvEditor</code> & <code>ColorChoiceDDMenu</code> (extends <code>JComboBox</code>; 
+    for various color choice drop-down menus; can also be useful in a control 
+    panel in the main winodw, e.g., <code>EnvPlotter</code>) &amp; <code>TextAndIconRenderer</code> 
+    (renders both the text and icon associated with a JLabel)</p>
+<ul>
+    <li>Examples: GenericMBS (doesn't another appl. also use EnvEditor?)</li>
+</ul>
+  <p>Then there are the classes that haven't been mentioned yet, which include:</p>
+  <ul>
+    <li>EnvAppController (briefly mentioned above; used in conjunction with ActiveEnvFrame)</li>
+    <li>PseudoInfiniteViewport (???)</li>
+  </ul>
+  <p>No mention of MBS <code>RandNumGenerator</code>, even though it's used by 
+    ColorChoiceDDMenu?</p>
+</blockquote>
+<hr>
+<hr>
+<div id=footer>
+  <sup>&#8224;</sup>AP is a registered trademark 
+  of the College Entrance Examination Board. The Marine Biology Simulation case 
+  study was copyrighted in 2002 by the College Entrance Examination Board.&nbsp; 
+  It is available on the web from the College Board web site (<a href="http://www.collegeboard.com/ap/students/compsci/download.html">www.collegeboard.com</a> 
+  and <a href="http://apcentral.collegeboard.com">apcentral.collegeboard.com</a>).<br>
+  &nbsp;<br>
+  <sup>&#8225;</sup>The <code>Location</code> and <code>Direction</code> classes
+  come  directly from the AP<sup>&reg;</sup> Marine Biology Simulation (MBS)
+  case study.&nbsp; The
+  <code>DisplayMap</code> and <code>DefaultDisplay</code> classes are very similar to their counterparts
+  of the same names in the MBS case study.<br>
+  &nbsp;<br>
+  Copyright Alyce Brady, 2002. </div>
+
+</body></html>

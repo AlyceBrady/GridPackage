@@ -44,9 +44,3 @@ Thumbs.db
 *.swp
 *~
 
-# Do not include the huge gifs/images directory!
-**/gifs
-**/images
-
-TeacherMaterials
-tmp
