@@ -6,7 +6,7 @@
 // and FishToolbar classes, as allowed by the GNU General Public License.
 // EnvironmentController and FishToolbar are black-box GUI classes
 // within the AP(r) CS Marine Biology Simulation case study 
-// (see www.collegeboard.com/ap/students/compsci).
+// (see http://www.collegeboard.com/student/testing/ap/compsci_a/case.html).
 //
 // License Information:
 //   This class is free software; you can redistribute it and/or modify
@@ -89,8 +89,8 @@ public class GridEditor extends GridAppFrame
     public void constructWindowContents()
     {
         String title = parentFrame.getTitle() + ": Grid Editor";
-        ScrollableGridDisplay parentDisplay = parentFrame.getGridDisplay();
-        JViewport vp = parentFrame.getGridDisplay().getEnclosingViewport();
+        ScrollableGridDisplay parentDisplay = parentFrame.getDisplay();
+        JViewport vp = parentFrame.getDisplay().getEnclosingViewport();
         Dimension windowSize = (vp != null) ? vp.getSize() : getSize();
         constructWindowContents(title, parentDisplay.backgroundColor(),
             windowSize.width, windowSize.height, 
@@ -107,8 +107,6 @@ public class GridEditor extends GridAppFrame
     public void constructWindowContents(String title, Color bgColor,
                      int viewingWidth, int viewingHeight, int minCellSize)
     {
-//        setGrid(parentFrame.getGrid());
-
         super.constructWindowContents(title, bgColor, viewingWidth, viewingHeight, minCellSize);
 
         // change the location and default close operation of the new window
@@ -304,7 +302,7 @@ public class GridEditor extends GridAppFrame
             {
                 getGrid().remove(obj);
             }
-            getGridDisplay().repaint();
+            getDisplay().repaint();
         }
     }
 

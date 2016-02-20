@@ -24,14 +24,15 @@ import java.awt.Graphics2D;
 /**
  *  Grid Display Package:<br>
  *
- *  A <code>DisplayDecorator</code> provides and interface for any decorator that
- *  will be used in the Display package.  All decorators must implement the
- *  interface in order to be added to a Display object.
+ *  A <code>DisplayDecorator</code> provides an interface for any decorator
+ *  that will be used in the Display package.  All decorators must implement
+ *  the interface in order to be added to a <code>Display</code> object.
  
  *  @author Joel Booth
  *  @version 28 July 2004
  */
 public interface DisplayDecorator {
 
-	public abstract void decorate(ScaledDisplay sd, GridObject obj, Component comp, Graphics2D g2);
+	public abstract void decorate(GridObjectDisplay disp, GridObject obj,
+                                  Component comp, Graphics2D g2);
 }

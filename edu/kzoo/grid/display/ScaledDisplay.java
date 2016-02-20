@@ -5,7 +5,8 @@
 // This class is based on the College Board's AbstractFishDisplay class,
 // as allowed by the GNU General Public License.  AbstractFishDisplay is a
 // black-box GUI class within the AP(r) CS Marine Biology Simulation
-// case study (see www.collegeboard.com/ap/students/compsci).
+// case study (see
+// http://www.collegeboard.com/student/testing/ap/compsci_a/case.html).
 //
 // License Information:
 //   This class is free software; you can redistribute it and/or modify
@@ -32,7 +33,7 @@ import java.util.ArrayList;
  *  Grid Display Package:<br>
  *
  *  This abstract class provides common implementation code for
- *  drawing a GridObject object.  The class will translate and
+ *  drawing a <code>GridObject</code> object.  The class will translate and
  *  scale the graphics system as needed and then invoke its
  *  abstract <code>draw</code> method. Subclasses of this abstract class 
  *  define <code>draw</code> to just display an object with a fixed size.
@@ -115,8 +116,9 @@ public abstract class ScaledDisplay implements GridObjectDisplay
     /** Adjusts the graphics system for drawing an object, as appropriate.
      *  This method actually makes no further adjustments, but subclasses
      *  could override this method to rotate the object, for example.
+     *  [This is a deprecated alternative to providing a decorator.]
      */
-    public void adjust(GridObject obj, Component comp, Graphics2D g2)
+    protected void adjust(GridObject obj, Component comp, Graphics2D g2)
     {
     }    
     

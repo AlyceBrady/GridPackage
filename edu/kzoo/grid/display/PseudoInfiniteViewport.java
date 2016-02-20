@@ -44,8 +44,8 @@ import javax.swing.Timer;
 
 public class PseudoInfiniteViewport extends JViewport
 {
-    /** The Pannable interface contains those methods the view
-     *  installed in a PseudoInfiniteViewport needs to support
+    /** The <code>Pannable</code> interface contains those methods that
+     *  the view in a <code>PseudoInfiniteViewport</code> needs to support
      *  to enable panning behavior along with scrolling.
      **/
     public interface Pannable 
@@ -53,7 +53,7 @@ public class PseudoInfiniteViewport extends JViewport
         void panBy(int hDelta, int vDelta);
         boolean isPannableUnbounded();
         String getPannableTipText(); //  return null if no tip desired
-   }
+    }
 
     private static final int ORIGIN_TIP_DELAY = 1000;
 

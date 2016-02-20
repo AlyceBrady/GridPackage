@@ -3,8 +3,8 @@
 // Author: Alyce Brady
 //
 // This class is based on the College Board's RandNumGenerator
-//(see www.collegeboard.com/ap/students/compsci), as allowed by
-// the GNU General Public License.
+// (see http://www.collegeboard.com/student/testing/ap/compsci_a/case.html),
+// as allowed by the GNU General Public License.
 //
 // License Information:
 // This class is free software; you can redistribute it and/or modify
@@ -25,8 +25,8 @@ import java.util.Random;
  * 
  *  The <code>RandNumGenerator</code> class provides a singleton
  *  object for random number generation.  <code>RandNumGenerator</code>
- *  extends the <code>java.util.Random</code> class, so objects of this
- *  class inherit all methods defined for the <code>Random</code> class.
+ *  extends the <code>java.util.Random</code> class, so the object of this
+ *  class inherits all methods defined for the <code>Random</code> class.
  *  Using this class, though, many different objects can share a single
  *  source of random numbers.  This eliminates the potential problem of
  *  having multiple random number generators generating sequences of
@@ -36,8 +36,8 @@ import java.util.Random;
  *  Example of how to use <code>RandNumGenerator</code>:  
  *    <pre><code>
  *       RandNumGenerator randNumGen = RandNumGenerator.getInstance();
- *       int randomInt = randNumGen.nextInt(4);
- *       double randomDouble = randNumGen.nextDouble();
+ *       int anInt = randNumGen.nextInt(4);
+ *       double aDouble = randNumGen.nextDouble();
  *    </code></pre>
  *
  *  <p>

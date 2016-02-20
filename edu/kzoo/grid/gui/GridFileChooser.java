@@ -5,7 +5,8 @@
 // This class is based on the College Board's EnvFileChooser class, as
 // allowed by the GNU General Public License.  The MBS EnvFileChooser class
 // is a black-box class within the AP(r) CS Marine Biology Simulation
-// case study (see www.collegeboard.com/ap/students/compsci).
+// case study (see
+// http://www.collegeboard.com/student/testing/ap/compsci_a/case.html).
 //
 // License Information:
 //   This class is free software; you can redistribute it and/or modify
@@ -40,7 +41,7 @@ import java.util.Set;
 /**
  *  Grid GUI Support Package:<br>
  *
- *  An <code>GridFileChooser</code> is a <code>JFileChooser</code>
+ *  A <code>GridFileChooser</code> is a <code>JFileChooser</code>
  *  subclass that adds
  *  some specialized behavior for opening and saving grid
  *  data files.  The additional features allow for filtering to
@@ -52,8 +53,9 @@ import java.util.Set;
  *  <p>
  *  This class is a slightly modified version of the College Board's
  *  Marine Biology Simulation <code>EnvFileChooser</code> class
- *  (see www.collegeboard.com/ap/students/compsci/).  Like the MBS
- *  version, this version will look in the <code>GridPkgFactory</code>
+ *  (see http://www.collegeboard.com/student/testing/ap/compsci_a/case.html).
+ *  Like the MBS
+ *  version, this version looks in the <code>GridPkgFactory</code>
  *  for lists of the available bounded and unbounded representations.
  *  This version, however, does not require applications to use
  *  <code>GridPkgFactory</code> if the only grid representations

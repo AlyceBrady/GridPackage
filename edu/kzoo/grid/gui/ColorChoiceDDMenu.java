@@ -5,7 +5,8 @@
 // This class is based on the College Board's FishToolbar class,
 // as allowed by the GNU General Public License.  FishToolbar is a
 // black-box GUI class within the AP(r) CS Marine Biology Simulation
-// case study (see www.collegeboard.com/ap/students/compsci).
+// case study (see
+// http://www.collegeboard.com/student/testing/ap/compsci_a/case.html).
 //
 // License Information:
 //   This class is free software; you can redistribute it and/or modify
@@ -22,6 +23,7 @@ package edu.kzoo.grid.gui;
 
 import edu.kzoo.grid.display.TextAndIconRenderer;
 
+import edu.kzoo.util.NamedColor;
 import edu.kzoo.util.RandNumGenerator;
 
 import java.awt.Color;
@@ -50,8 +52,8 @@ import java.util.Random;
  *
  *  <p>
  *  A number of predefined color choices,
- *  <code>ColorChoiceDDMenu.RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE,
- *  WHITE, BLACK, RANDOM,</code> or <code>CUSTOM</code>,
+ *  <code>ColorChoiceDDMenu.RED, ORANGE, YELLOW, GREEN, BLUE, INDIGO,
+ *  VIOLET, WHITE, GRAY, BLACK, RANDOM,</code> and <code>CUSTOM</code>,
  *  have been provided for specifying the choices that should be made
  *  available in the menu and for specifying the initial selected color
  *  choice.  This set of choices comprises the standard set.
@@ -67,22 +69,41 @@ public class ColorChoiceDDMenu extends JComboBox
     // Constants that indicate pre-defined color choices that may be used
     // in a color choice drop-down menu.
     public static final ColorChoice
-        RED = new ColorChoice("Red", Color.red),
-        ORANGE = new ColorChoice("Orange", new Color(255, 128, 0)),
-        YELLOW = new ColorChoice("Yellow", Color.yellow),
-        GREEN = new ColorChoice("Green", Color.green),
-        BLUE = new ColorChoice("Blue", new Color(0, 128, 255)),
-        PURPLE = new ColorChoice("Purple", new Color(128, 0, 128)),
-        WHITE = new ColorChoice("White", Color.white),
-        GRAY = new ColorChoice("Gray", Color.gray),
-        BLACK = new ColorChoice("Black", Color.black),
+        RED = new ColorChoice("Red", NamedColor.RED),
+        ORANGE = new ColorChoice("Orange", NamedColor.PUMPKIN),
+        YELLOW = new ColorChoice("Yellow", NamedColor.YELLOW),
+        GREEN = new ColorChoice("Green", NamedColor.MEDIUM_GREEN),
+        BLUE = new ColorChoice("Blue", NamedColor.BLUE),
+        INDIGO = new ColorChoice("Indigo", NamedColor.INDIGO),
+        VIOLET = new ColorChoice("Violet", NamedColor.VIOLET),
+        WHITE = new ColorChoice("White", NamedColor.WHITE),
+        GRAY = new ColorChoice("Gray", NamedColor.GRAY),
+        BLACK = new ColorChoice("Black", NamedColor.BLACK),
         RANDOM = new ColorChoice("Random", RANDOM_COLOR),
-        CUSTOM = new ColorChoice("Other ...", Color.lightGray);
+        CUSTOM = new ColorChoice("Other ...", NamedColor.LIGHT_GRAY);
     public static final ColorChoice[] STANDARD_CHOICES = {
-        RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE, WHITE, GRAY, BLACK,
+        RED, ORANGE, YELLOW, GREEN, BLUE, INDIGO, VIOLET, WHITE, GRAY, BLACK,
         RANDOM, CUSTOM };
 
-  // constructors and initialization methods
+  // static methods
+
+    /** Gets the color choice from <code>STANDARD_CHOICES</code> with the
+     *  specified name.  Returns <code>null</code> if there is no such
+     *  color choice in <code>STANDARD_CHOICES</code>.
+     **/
+    public static ColorChoice getChoice(String name)
+    {
+        for ( int i = 0; i < STANDARD_CHOICES.length; i++ )
+        {
+            ColorChoice choice = STANDARD_CHOICES[i];
+            if ( choice.toString().equals(name) )
+                return choice;
+        }
+        return null;
+    }
+
+
+  // constructors
 
     /** Creates a color choice menu in which the selected choice to begin
      *  with is the "Random" color choice.
@@ -93,12 +114,22 @@ public class ColorChoiceDDMenu extends JComboBox
     }
 
     /** Creates a color choice menu in which <code>startingColorChoice</code>
-     *  is the selected one when the menu is created.  The starting color
-     *  may be any of the pre-defined color choices,
-     *  <code>ColorChoiceDDMenu.RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE,
-     *  WHITE, BLACK, RANDOM,</code> or <code>CUSTOM</code>,
-     *  or it may one constructed with the
-     *  <code>ColorChoiceDDMenu.ColorChoice</code> constructor.
+     *  is the selected one when the menu is created.
+     *  (Precondition: <code>startingColorChoice</code> is one of the
+     *  color choices in <code>STANDARD_CHOICES</code>, whose labels are
+     *  "Red", "Orange", "Yellow", "Green", "Blue", "Indigo", "Violet",
+     *  "White", "Gray", "Black", "Random", and "Other ...".)
+     *      @param startingColorChoice the initial selected color choice
+     **/
+    public ColorChoiceDDMenu(String startingColorChoice)
+    {
+        this(STANDARD_CHOICES, getChoice(startingColorChoice));
+    }
+
+    /** Creates a color choice menu in which <code>startingColorChoice</code>
+     *  is the selected one when the menu is created.
+     *  (Precondition: <code>startingColorChoice</code> is one of the
+     *  color choices in <code>STANDARD_CHOICES</code>.)
      *      @param startingColorChoice the initial selected color choice
      **/
     public ColorChoiceDDMenu(ColorChoice startingColorChoice)
@@ -110,10 +141,12 @@ public class ColorChoiceDDMenu extends JComboBox
      *  with <code>startingColorChoice</code>
      *  as the selected one when the menu is created.  The color choices
      *  may be any of the pre-defined color choices,
-     *  <code>ColorChoiceDDMenu.RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE,
-     *  WHITE, BLACK, RANDOM,</code> or <code>CUSTOM</code>,
+     *  <code>ColorChoiceDDMenu.RED, ORANGE, YELLOW, GREEN, BLUE, INDIGO,
+     *  VIOLET, WHITE, BLACK, RANDOM,</code> or <code>CUSTOM</code>,
      *  or may ones constructed with the
      *  <code>ColorChoiceDDMenu.ColorChoice</code> constructor.
+     *  (Precondition: <code>startingColorChoice</code> is one of the
+     *  color choices in <code>colorChoices</code>.)
      *      @param colorChoices the set of color choices to show in the
      *                          drop-down menu
      *      @param startingColorChoice the initial selected color choice
@@ -122,12 +155,16 @@ public class ColorChoiceDDMenu extends JComboBox
                              ColorChoice startingColorChoice)
     {
         super(colorChoices);
-        setSelectedItem(startingColorChoice);
+        if ( startingColorChoice != null )
+            setSelectedItem(startingColorChoice);
         setRenderer(new TextAndIconRenderer(this));
         setAlignmentX(LEFT_ALIGNMENT);
         addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) { chooseColor(); }});
     }
+
+
+  // methods
 
     /** Follows up when the user picks a new choice from the
      *  drop-down menu (specified listener action).
@@ -166,12 +203,17 @@ public class ColorChoiceDDMenu extends JComboBox
     /** Nested class used to hold the per-item information 
      *  for the entries in the combo box of color
      *  choices. Each item represents a color choice which
-     *  is basically just a Color object and a name.
+     *  is basically just a Color object, an icon, and a name.
      */
     public static class ColorChoice extends JLabel
     {
         private Color color;
 
+        public ColorChoice(NamedColor c)
+            { super(c.toString(), new ColorIcon(c, 16, 16),
+                    SwingConstants.LEFT);
+              color = c;
+            }
         public ColorChoice(String name, Color c)
             { super(name, new ColorIcon(c, 16, 16), SwingConstants.LEFT);
               color = c;

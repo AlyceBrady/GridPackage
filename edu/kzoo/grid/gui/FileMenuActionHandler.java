@@ -5,7 +5,8 @@
 // This class is based on the College Board's EnvironmentController class,
 // as allowed by the GNU General Public License.  EnvironmentController
 // is a black-box class within the AP(r) CS Marine Biology Simulation
-// case study (see www.collegeboard.com/ap/students/compsci).
+// case study (see
+// http://www.collegeboard.com/student/testing/ap/compsci_a/case.html).
 //
 // License Information:
 //   This class is free software; you can redistribute it and/or modify
@@ -170,7 +171,7 @@ public class FileMenuActionHandler
      *  Subclasses that support grid editing should ensure that the
      *  application is not actively running and modifying the grid
      *  while the grid is being edited.  For example, if the parent
-     *  frame is a <code>ControlledGridAppFrame</code>, the subclass
+     *  frame is a <code>SteppedGridAppFrame</code>, the subclass
      *  should call the frame's <code>stop</code> method.
      **/
     public void editGrid()

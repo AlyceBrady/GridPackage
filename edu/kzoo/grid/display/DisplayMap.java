@@ -3,10 +3,13 @@
 // This is a modified version of the College Board's DisplayMap class,
 // as allowed by the GNU General Public License.  DisplayMap is a
 // black-box GUI class within the AP(r) CS Marine Biology Simulation
-// case study (see www.collegeboard.com/ap/students/compsci).
+// case study (see
+// http://www.collegeboard.com/student/testing/ap/compsci_a/case.html).
 //
 // The modifications were to make DisplayMap work with GridObject and
 // GridObjectDisplay objects.
+// Modified on 1 March 2005 to look for default display classes or
+// image files corresponding to the class to display.
 //
 // The original copyright and license information for DisplayMap is:
 //
@@ -42,7 +45,10 @@ import java.util.HashMap;
  *
  *  @author Alyce Brady
  *  @author Jeff Raab, Northeastern University
- *  @version 13 December 2003
+ *  @author Alyce Brady (modified 1 March 2005 to look for default
+ *                       display classes or image files corresponding to
+ *                       a particular class name)
+ *  @version 1 March 2005
  **/
 public class DisplayMap
 {
@@ -88,6 +94,10 @@ public class DisplayMap
             GridObjectDisplay display = (GridObjectDisplay) map.get(c);
             if ( display != null )
                 return display;
+            display = DefaultDisplayFactory.getDefaultDisplay(c);
+            if ( display != null )
+                return display;
+                
         }
 
         // No specific display found; use default display for generic

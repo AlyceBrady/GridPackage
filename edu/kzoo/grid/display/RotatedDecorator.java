@@ -31,8 +31,10 @@ import java.lang.reflect.InvocationTargetException;
  * Grid Display Package:<br>
  *
  *  A <code>RotatedDecorator</code> will allow a display to change as the
- *  object it is associated with changes direction.  The <code>GridObject</code>
- *  must have a <code>Direction</code> direction in order for it to work.
+ *  object it is associated with changes direction.  The
+ *  <code>GridObject</code> must have a <code>direction</code> method that
+ *  returns a <code>Direction</code> object in order for the decorator to
+ *  work.
  * 
  * @author Joel Booth
  * @version 28 July 2004
@@ -55,7 +57,7 @@ public class RotatedDecorator implements DisplayDecorator {
 	/** Apply the rotating aspect of the decoration.  It is called from the class that
 	 * has added the decorator.  
 	 */
-	public void decorate(ScaledDisplay sd, GridObject obj, Component comp, Graphics2D g2) {
+	public void decorate(GridObjectDisplay sd, GridObject obj, Component comp, Graphics2D g2) {
 		// Rotate drawing surface to compensate for the direction of the object
 		// in the image (in case it is not facing North, as assumed). 
 		if ( ! originalDirection.equals(Direction.NORTH) )

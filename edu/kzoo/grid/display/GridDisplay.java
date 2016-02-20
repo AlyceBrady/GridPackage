@@ -5,7 +5,8 @@
 // This class is based on the College Board's EnvDisplay class, as
 // allowed by the GNU General Public License.  EnvDisplay is a
 // black-box class within the AP(r) CS Marine Biology Simulation
-// case study (see www.collegeboard.com/ap/students/compsci).
+// case study (see
+// http://www.collegeboard.com/student/testing/ap/compsci_a/case.html).
 //
 // License Information:
 //   This class is free software; you can redistribute it and/or modify

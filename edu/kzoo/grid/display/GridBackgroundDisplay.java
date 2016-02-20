@@ -1,4 +1,4 @@
-// Class: ModelChangeListener
+// Interface: GridBackgroundDisplay
 //
 // Author: Alyce Brady
 //
@@ -12,22 +12,26 @@
 //   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //   GNU General Public License for more details.
 
-package edu.kzoo.kgui;
+package edu.kzoo.grid.display;
+
+import java.awt.Graphics2D;
 
 /**
- *  K College GUI Package:<br>
+ *  Grid Display Package:<br>
  *
- *  The <code>ModelChangeListener</code> interface specifies the
- *  method used to notify <code>ModelChangeListener</code> objects
- *  of changes to the model.
+ *  The <code>GridBackgroundDisplay</code> interface specifies the
+ *  method that must be provided by any class used to display
+ *  a <code>Grid</code> background.
  *
  *  @author Alyce Brady
- *  @version 31 March 2004
+ *  @version 1 September 2004
  **/
-public interface ModelChangeListener
+public interface GridBackgroundDisplay
 {
-    /** Reacts to a change in the model being used.
-     *    @param newModel  the new model being used
+
+    /** Draws the grid background.
+     *    @param g2 the Graphics2 object to use to render 
      **/
-    public void reactToNewModel(Object newModel);
+    void drawBackground(Graphics2D g2);
+
 }

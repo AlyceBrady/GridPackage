@@ -5,7 +5,8 @@
 // This class is based on the College Board's FishToolbar class,
 // as allowed by the GNU General Public License.  FishToolbar is a
 // black-box GUI class within the AP(r) CS Marine Biology Simulation
-// case study (see www.collegeboard.com/ap/students/compsci).
+// case study (see
+// http://www.collegeboard.com/student/testing/ap/compsci_a/case.html).
 //
 // License Information:
 //   This class is free software; you can redistribute it and/or modify
@@ -30,8 +31,8 @@ import javax.swing.ListCellRenderer;
  *
  *  The <code>TextAndIconRenderer</code> class provides a
  *  renderer that paints both the text and the icon of a
- *  JLabel.  (The default renderer only displays one or the
- *  other.)
+ *  <code>JLabel</code>.  (The default renderer only displays
+ *  one or the other.)
  *
  *  @author Alyce Brady (based on code by Julie Zelenski)
  *  @version 13 December 2003

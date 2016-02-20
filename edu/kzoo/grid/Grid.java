@@ -6,7 +6,7 @@
 // and SquareEnvironment class, as allowed by the GNU General Public
 // License.  Environment and SquareEnvironment are components of
 // the AP(r) CS Marine Biology Simulation case study
-// (see www.collegeboard.com/ap/students/compsci).
+// (see http://www.collegeboard.com/student/testing/ap/compsci_a/case.html).
 //
 // License Information:
 //   This class is free software; you can redistribute it and/or modify
@@ -279,7 +279,8 @@ public abstract class Grid
 
     /** Adds a new object to this grid at the specified location.
      *  (Precondition: <code>obj.grid()</code> and
-     *   <code>obj.location()</code> are both <code>null</code>.)
+     *   <code>obj.location()</code> are both <code>null</code>;
+     *   <code>loc</code> is a valid empty location in this grid.)
      *  @param obj the new object to be added
      *  @throws    IllegalArgumentException if the precondition is not met
      **/
@@ -365,6 +366,18 @@ public abstract class Grid
         // The object is in the process of removing itself from the grid,
         // so we can remove it.
         internalRep.remove(obj);
+    }
+
+    /** Removes all objects from this grid.
+     **/
+    public synchronized void removeAll()
+    {
+        // Loop through the objects in the grid and remove them.
+        GridObject[] objectsToRemove = allObjects();
+        for ( int i = 0; i < objectsToRemove.length; i++ )
+        {
+            remove(objectsToRemove[i]);
+        }
     }
 
 

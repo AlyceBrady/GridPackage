@@ -5,7 +5,8 @@
 // This class is based on the College Board's MBSDisplay class, as
 // allowed by the GNU General Public License.  MBSDisplay is a
 // black-box GUI class within the AP(r) CS Marine Biology Simulation
-// case study (see www.collegeboard.com/ap/students/compsci).
+// case study (see
+// http://www.collegeboard.com/student/testing/ap/compsci_a/case.html).
 //
 // License Information:
 //   This class is free software; you can redistribute it and/or modify
@@ -56,8 +57,8 @@ import java.awt.geom.AffineTransform;
  *  @version 13 February 2004
  **/
 public class ScrollableGridDisplay extends JPanel
-    implements GridDisplay, GridChangeListener, Scrollable, 
-    PseudoInfiniteViewport.Pannable
+    implements GridDisplay, GridBackgroundDisplay, GridChangeListener,
+    Scrollable, PseudoInfiniteViewport.Pannable
 {
     // Class constants
     public static final int DEFAULT_MIN_CELL_SIZE = 8, 
@@ -74,9 +75,10 @@ public class ScrollableGridDisplay extends JPanel
                   outerCellSize,           // actual cell size, including width of grid lines
                   numRows, numCols,        // number of rows & cols to display in grid
                   originRow, originCol;    // row and column representing origin
+    protected GridBackgroundDisplay backgroundDisplay;
     protected Color bgColor;
     protected boolean toolTipsEnabledFlag;
-    protected int toolTipsType = LOCATION_TOOL_TIPS;
+    protected int toolTipsType = OBJECT_STRING_TOOL_TIPS;
 
 
     /** Constructs a new ScrollableGridDisplay object with no grid
@@ -190,6 +192,7 @@ public class ScrollableGridDisplay extends JPanel
         preferredVPSize = new Dimension(origViewingWidth + extraWidth(),
                                         origViewingHeight + extraHeight());
 
+        backgroundDisplay = this;
         if ( backgroundColor != null )
             bgColor = backgroundColor;
         else
@@ -208,14 +211,6 @@ public class ScrollableGridDisplay extends JPanel
                       }
                     }
             });
-    }
-
-    /* (non-Javadoc)
-     * @see edu.kzoo.grid.gui.GridChangeListener#reactToNewGrid(edu.kzoo.grid.Grid)
-     */
-    public void reactToNewGrid(Grid newGrid)
-    {
-        setGrid(newGrid);
     }
 
     /** Sets the Grid being displayed.  Sets the cell size to
@@ -251,6 +246,14 @@ public class ScrollableGridDisplay extends JPanel
         recalculateCellSize();
     }
 
+    /* (non-Javadoc)
+     * @see edu.kzoo.grid.gui.GridChangeListener#reactToNewGrid(edu.kzoo.grid.Grid)
+     */
+    public void reactToNewGrid(Grid newGrid)
+    {
+        setGrid(newGrid);
+    }
+
     /** Gets our parent viewport, if we are in one.
      **/
     public JViewport getEnclosingViewport()
@@ -259,7 +262,7 @@ public class ScrollableGridDisplay extends JPanel
         return (parent instanceof JViewport) ? (JViewport)parent : null;
     }
 
-    /** Calculates the cell size to use given the current viewable region and the
+    /** Calculates the cell size to use given the current viewable region and
      *  the number of rows and columns in the grid.  We use the largest
      *  cellSize that will fit in the viewable region, bounded to be at least
      *  the parameter minSize.
@@ -295,7 +298,7 @@ public class ScrollableGridDisplay extends JPanel
 
     /** Returns the size of each cell, not including the width of a grid line.
      **/
-    protected int innerCellSize()
+    public int innerCellSize()
     {
         return outerCellSize - gridLineWidth;
     }
@@ -310,6 +313,12 @@ public class ScrollableGridDisplay extends JPanel
     public int minimumCellSize()
     {
         return minCellSize;
+    }
+
+    /** Sets the object used to draw the background. **/
+    public void setBackgroundDisplay(GridBackgroundDisplay bgDisplay)
+    {
+        backgroundDisplay = bgDisplay;
     }
 
     /** Gets the background color for displaying the grid. **/
@@ -401,11 +410,7 @@ public class ScrollableGridDisplay extends JPanel
         if (grid() == null)
             return;
         
-        Insets insets = getInsets();
-        g2.setColor(bgColor);  // fill background
-        g2.fillRect(insets.left, insets.top, 
-                    numCols*outerCellSize + gridLineWidth,
-                    numRows*outerCellSize + gridLineWidth);
+        backgroundDisplay.drawBackground(g2);
 
         GridObject[] allGridObjects = grid().allObjects();
         for (int k = 0; k < allGridObjects.length; k++) 
@@ -413,6 +418,32 @@ public class ScrollableGridDisplay extends JPanel
 
         if ( gridLinesAreVisible() )
             drawGridlines(g2);
+    }
+
+    /** Draws the grid background.
+     *    @param g2 the Graphics2 object to use to render 
+     **/
+    public void drawBackground(Graphics2D g2)
+    {
+        fillBackground(g2, bgColor);
+    }
+
+    /** Fills the grid background with the specified color.  At the
+     *  end of this method, the graphics context is set to draw
+     *  whatever color it was set to draw when the method was called,
+     *  not the fill color.
+     *    @param g2         the Graphics2 object to use to render
+     *    @param fillColor  the color with which to fill the background 
+     **/
+    public void fillBackground(Graphics2D g2, Color fillColor)
+    {
+        Color oldColor = g2.getColor();
+        Insets insets = getInsets();
+        g2.setColor(fillColor);
+        g2.fillRect(insets.left, insets.top, 
+                    numCols*outerCellSize + gridLineWidth,
+                    numRows*outerCellSize + gridLineWidth);
+        g2.setColor(oldColor);
     }
 
     /** Draws the gridlines for the grid.  We only draw the portion
@@ -669,19 +700,26 @@ public class ScrollableGridDisplay extends JPanel
     }
 
     // protected helpers to convert between (x,y) and (row,col)
+    /** Returns column corresponding to given X-coordinate. **/
     protected int xCoordToCol(int xCoord)
     {
         return (xCoord - getInsets().left - gridLineWidth)/outerCellSize + originCol;
     }
+
+    /** Returns row corresponding to given Y-coordinate. **/
     protected int yCoordToRow(int yCoord)
     {
         return (yCoord - getInsets().top - gridLineWidth)/outerCellSize + originRow;
     }
-    protected int colToXCoord(int col)
+
+    /** Returns X-coordinate of left side of given column. **/
+    public int colToXCoord(int col)
     {
         return (col - originCol)*outerCellSize + getInsets().left + gridLineWidth;
     }
-    protected int rowToYCoord(int row)
+
+    /** Returns Y-coordinate of top of given row. **/
+    public int rowToYCoord(int row)
     {
         return (row - originRow)*outerCellSize + getInsets().top + gridLineWidth;
     }

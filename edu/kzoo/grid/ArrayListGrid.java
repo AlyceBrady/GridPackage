@@ -5,7 +5,8 @@
 // This class is based on the College Board's UnboundedEnv class,
 // as allowed by the GNU General Public License.  UnboundedEnv is a
 // component of the AP(r) CS Marine Biology Simulation
-// case study (see www.collegeboard.com/ap/students/compsci).
+// case study (see
+// http://www.collegeboard.com/student/testing/ap/compsci_a/case.html).
 //
 // License Information:
 //   This class is free software; you can redistribute it and/or modify
@@ -21,12 +22,15 @@ package edu.kzoo.grid;
 
 import java.util.ArrayList;
 
-/** The <code>ArrayListGrid</code> class encapsulates two inner classes
- *  that extends the <code>Grid</code> class to
+/**
+ *  Grid Container Package:<br>
+ *
+ *  The <code>ArrayListGrid</code> class encapsulates two public inner
+ *  classes that extend the <code>Grid</code> class to
  *  model a two-dimensional grid by keeping track of their contents
- *  in <code>ArrayList</code> objects.  The first inner class,
+ *  in <code>ArrayList</code> objects.  The first public inner class,
  *  <code>ArrayListGrid.Bounded</code>, represents a bounded grid
- *  using an <code>ArrayList</code>, while the second inner class,
+ *  using an <code>ArrayList</code>, while the second public inner class,
  *  <code>ArrayListGrid.Unbounded</code>, represents an unbounded grid
  *  using an <code>ArrayList</code>.
  *

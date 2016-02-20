@@ -5,7 +5,8 @@
 // This class is based on the College Board's CreateEnvDialog class,
 // as allowed by the GNU General Public License.  CreateEnvDialog
 // is a black-box class within the AP(r) CS Marine Biology Simulation
-// case study (see www.collegeboard.com/ap/students/compsci).
+// case study (see
+// http://www.collegeboard.com/student/testing/ap/compsci_a/case.html).
 //
 // License Information:
 //   This class is free software; you can redistribute it and/or modify
@@ -38,7 +39,7 @@ import javax.swing.JTextField;
 /**
  *  Grid GUI Support Package:<br>
  *
- *  An <code>GridCreationDialog</code> is a dialog that allows the user
+ *  A <code>GridCreationDialog</code> is a dialog that allows the user
  *  to construct a new grid, choosing its type (bounded or unbounded)
  *  and, if appropriate, its dimensions.
  *

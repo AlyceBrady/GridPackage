@@ -19,9 +19,9 @@ package edu.kzoo.grid;
  * 
  *  A <code>GridObject</code> object is an object that can be contained
  *  in a grid.  If it is in a grid, it keeps track of its location
- *  there.  
- *  it moves, notifies the grid.  This ensures that the object and the
- *  grid in which it is located always agree about where the object is.
+ *  there.  When it moves, it notifies the grid.  This ensures that the
+ *  object and the grid in which it is located always agree about where
+ *  the object is.
  *
  *  Object invariant:
  *  <pre>
@@ -54,7 +54,9 @@ public class GridObject
     /** Constructs an instance of a GridObject and places it in the specified
      *  grid.
      *  (Precondition: either both <code>loc</code> and <code>grid</code> are
-     *   <code>null</code> or neither is <code>null</code>.)
+     *   <code>null</code> or neither is <code>null</code>; if <code>loc</code>
+     *   is not <code>null</code>, it is a valid empty location in
+     *   <code>grid</code>.)
      *  @param grid   the grid in which this object should be placed
      *  @param loc    the location of this grid object
      *  @throws       IllegalArgumentException if the precondition is not met
@@ -122,25 +124,38 @@ public class GridObject
      **/
     public String toString()
     {
-        return location().toString();
+        return getClass().getName() + " " + location().toString();
     }
 
-  // modifier methods: these are protected because not all subclasses
+
+  // public modifier method
+
+    /** Acts.  For example, acts for one step in an animation or simulation.
+     *  This implementation of <code>act</code> does not, in fact, do
+     *  anything, but subclasses may redefine it to have specific,
+     *  application-dependent behavior.
+     **/
+    public void act()
+    {
+    }
+
+  // protected modifier methods: these are protected because not all subclasses
   //   will wish to allow client code to modify an object's location.
   //   Those subclasses that do should provide a public method to do so
   //   (e.g., a move method), which can, in turn, call the methods below.
 
     /** Adds this object to the specified grid at the specified location.
-     *  (Precondition: this object is not currently in a grid and
+     *  (Precondition: this object is not currently in a grid;
      *                 neither <code>grid</code> nor <code>loc</code>
-     *                 is <code>null</code>.)
+     *                 is <code>null</code>; <code>loc</code> is a valid
+     *                 empty location in <code>grid</code>.)
      *  @param grid   the grid in which this object should be placed
      *  @param loc    the location of this grid object
      *  @throws       IllegalArgumentException if the precondition is not met
      **/
     protected synchronized void addToGrid(Grid grid, Location loc)
     {
-        // Verify precondition.
+        // Verify parts of precondition not verified by Grid.internalAdd.
         if ( this.grid() != null || grid == null || loc == null )
             throw new IllegalArgumentException();
 

@@ -5,7 +5,8 @@
 // This class is based on the College Board's CreateEnvDialog class,
 // as allowed by the GNU General Public License.  CreateEnvDialog
 // is a black-box class within the AP(r) CS Marine Biology Simulation
-// case study (see www.collegeboard.com/ap/students/compsci).
+// case study (see
+// http://www.collegeboard.com/student/testing/ap/compsci_a/case.html).
 //
 // License Information:
 //   This class is free software; you can redistribute it and/or modify
@@ -29,7 +30,7 @@ import java.util.Set;
 /**
  *  Grid GUI Support Package:<br>
  *
- *  An <code>GridChoiceComboBox</code> is a dialog that allows the user to
+ *  A <code>GridChoiceComboBox</code> is a dialog that allows the user to
  *  choose the type of grid to be created and, if appropriate, its
  *  dimensions.
  *
@@ -41,7 +42,7 @@ public class GridChoiceComboBox extends JComboBox
     private GridChoice gridChoice;
 
     /** Adds bounded grid classes to the combo box.  If the
-     *  GridPkgFactory has a list of bounded grid, that list is
+     *  GridPkgFactory has a list of bounded grids, that list is
      *  used.  Otherwise, only the BoundedGrid class is added.
      **/
     public void addBoundedGrids()
