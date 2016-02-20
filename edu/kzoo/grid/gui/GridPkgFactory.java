@@ -20,6 +20,8 @@
 
 package edu.kzoo.grid.gui;
 
+import edu.kzoo.grid.ArrayListGrid;
+import edu.kzoo.grid.BoundedGrid;
 import edu.kzoo.grid.Direction;
 import edu.kzoo.grid.Grid;
 import edu.kzoo.grid.GridObject;
@@ -57,17 +59,83 @@ public class GridPkgFactory
         public int compare(Object o1, Object o2) { 
             return o1.toString().compareTo(o2.toString());
         }};
-    private static Set gridObjectClasses = new TreeSet(classCmp);
-    private static Set boundedGridClasses = new TreeSet(classCmp);
-    private static Set unboundedGridClasses = new TreeSet(classCmp);
-    
+    private static Set<? extends GridObject> gridObjectClasses =
+                                        new TreeSet<GridObject>(classCmp);
+    private static Set<? extends Grid> boundedGridClasses =
+                                        new TreeSet<Grid>(classCmp);
+    private static Set<? extends Grid> unboundedGridClasses =
+                                        new TreeSet<Grid>(classCmp);
+
+    private static Class<? extends Grid> defaultBoundedGridClass = BoundedGrid.class;
+    private static Class<? extends Grid> defaultUnboundedGridClass = ArrayListGrid.Unbounded.class;
+
     // Class constants that define the parameter types for common Grid constructors
-    private static final Class[] TWO_ARG_TYPES = {Grid.class, Location.class};
-    private static final Class[] THREE_ARG_TYPES = {Grid.class, Location.class, Direction.class};
-    private static final Class[] FOUR_ARG_TYPES = {Grid.class, Location.class, Direction.class, Color.class};
-    private static final Class[] BOUNDED_ARGS = {int.class, int.class};
-    private static final Class[] UNBOUNDED_ARGS = null;
-    
+    private static final Class<?>[] TWO_ARG_TYPES = {Grid.class, Location.class};
+    private static final Class<?>[] THREE_ARG_TYPES = {Grid.class, Location.class, Direction.class};
+    private static final Class<?>[] FOUR_ARG_TYPES = {Grid.class, Location.class, Direction.class, Color.class};
+    private static final Class<?>[] BOUNDED_ARGS = {int.class, int.class};
+    private static final Class<?>[] UNBOUNDED_ARGS = null;
+
+
+    /** Returns the class that serves as the default bounded grid class.
+     *  The default class is <code>BoundedGrid</code> unless it has been set
+     *  to something else by the <code>setDefaultBoundedGrid</code> method.
+     */
+    public static Class<? extends Grid> getDefaultBoundedGridClass()
+    {
+        return defaultBoundedGridClass;
+    }
+
+    /** Sets the class that serves as the default bounded grid class to
+     *  the given parameter.
+     *  (Precondition: <code>cls</code> must have a constructor that
+     *  takes two <code>int</code> parameters representing the number of
+     *  rows and number of columns in a new grid.)
+     *    @param cls
+     */
+    public static void setDefaultBoundedGridClass(Class<? extends Grid> cls)
+    {
+        try
+        {
+            if (isValidGridClass(cls, BOUNDED_ARGS))
+                defaultBoundedGridClass = cls;
+        }
+        catch (NoSuchMethodException e) 
+        {
+            throw new IllegalArgumentException(cls.getName() +
+                " doesn't have the proper (int, int) constructor.");
+        } 
+    }
+
+    /** Returns the class that serves as the default bounded grid class.
+     *  The default class is <code>BoundedGrid</code> unless it has been set
+     *  to something else by the <code>setDefaultBoundedGrid</code> method.
+     */
+    public static Class<? extends Grid> getDefaultUnboundedGridClass()
+    {
+        return defaultUnboundedGridClass;
+    }
+
+    /** Sets the class that serves as the default bounded grid class to
+     *  the given parameter.
+     *  (Precondition: <code>cls</code> must have a constructor that
+     *  takes two <code>int</code> parameters representing the number of
+     *  rows and number of columns in a new grid.)
+     *    @param cls
+     */
+    public static void setDefaultUnboundedGridClass(Class<? extends Grid> cls)
+    {
+        try
+        {
+            if (isValidGridClass(cls, UNBOUNDED_ARGS))
+                defaultUnboundedGridClass = cls;
+        }
+        catch (NoSuchMethodException e) 
+        {
+            throw new IllegalArgumentException(cls.getName() +
+                " doesn't have the proper no-parameter constructor.");
+        } 
+    }
 
     /** Creates an object of the given class.
      *  @param   cls        	 class of new object
@@ -79,7 +147,7 @@ public class GridPkgFactory
      *                              be constructed with the specified
      *                              parameters
      **/
-    public static Object constructObject(Class cls, Class[] parameterTypes,
+    public static Object constructObject(Class<?> cls, Class<?>[] parameterTypes,
                                          Object[] parameters)                                        
     {
        Object newObject = null;        // the new object
@@ -95,7 +163,7 @@ public class GridPkgFactory
             else
             {
                	// use the constructor that matches the parameterTypes
-                Constructor objCons = cls.getConstructor(parameterTypes);
+                Constructor<?> objCons = cls.getConstructor(parameterTypes);
                 newObject = objCons.newInstance(parameters);
             }
             return newObject;
@@ -108,21 +176,33 @@ public class GridPkgFactory
      }
      
 
-    /** Creates an instance of the given grid object class using a
-     *  two-argument constructor that takes a grid and a location.
+    /** Creates an instance of the given grid object class using either a
+     *  two-argument constructor that takes a grid and a location or a
+     *  default constructor followed by a call to add the object to
+     *  the given grid at the given location.
      *  @param   cls  	class of new grid object
-     *  @param   grid 	grid in which this object will act
+     *  @param   grid 	grid in which this object will reside
      *  @param   loc  	location the object will occupy
      *  @return  the newly created grid object
-     *  @throws MBSException   if an object of the specified class cannot be
-     *                         constructed with the specified parameters
+     *  @throws  RuntimeException   if a grid object of the specified class
+     *                              cannot be constructed with the specified
+     *                              parameters
      **/
-    public static Object constructGridObject(Class cls, Grid grid,
-                                            Location loc)
+    public static Object constructGridObject(Class<? extends GridObject> cls,
+                                             Grid grid, Location loc)
     {
         Object[] parameters = {grid, loc};
-        return constructObject(cls, TWO_ARG_TYPES, parameters);
-    }
+        try
+        {
+            return constructObject(cls, TWO_ARG_TYPES, parameters);
+        }
+        catch (RuntimeException e)
+        {
+            GridObject o = (GridObject) constructObject(cls, null, null);
+            grid.add(o, loc);
+            return o;
+        }
+   }
 
     /** Creates an instance of the given grid object class using a
      *  three-argument constructor that takes a grid, a location,
@@ -132,11 +212,13 @@ public class GridPkgFactory
      *  @param   loc  	location the object will occupy
      *  @param   dir   	direction the object will face
      *  @return  the newly created grid object
-     *  @throws MBSException   if an object of the specified class cannot be
-     *                         constructed with the specified parameters
+     *  @throws  RuntimeException   if an object of the specified class cannot
+     *                              be constructed with the specified
+     *                              parameters
      **/
-    public static Object constructGridObject(Class cls, Grid grid,
-                                            Location loc, Direction dir)
+    public static Object constructGridObject(Class<? extends GridObject> cls,
+                                             Grid grid, Location loc,
+                                             Direction dir)
     {
         Object[] parameters = {grid, loc, dir};
         return constructObject(cls, THREE_ARG_TYPES, parameters);
@@ -151,12 +233,13 @@ public class GridPkgFactory
      *  @param   dir   	direction the object will face
      *  @param   color 	color of the object
      *  @return  the newly created grid object
-     *  @throws MBSException   if an object of the specified class cannot be
-     *                         constructed with the specified parameters
+     *  @throws  RuntimeException   if an object of the specified class cannot
+     *                              be constructed with the specified
+     *                              parameters
      **/
-    public static Object constructGridObject(Class cls, Grid grid, 
-                                            Location loc, Direction dir,
-                                            Color color)
+    public static Object constructGridObject(Class<? extends GridObject> cls,
+                                             Grid grid, Location loc,
+                                             Direction dir, Color color)
     {
         Object[] parameters = {grid, loc, dir, color};
         return constructObject(cls, FOUR_ARG_TYPES, parameters);
@@ -167,10 +250,10 @@ public class GridPkgFactory
      *  dimensions are specified.
      *  @param   cls  	class of new grid
      *  @return  the newly created grid
-     *  @throws MBSException   if a grid of the specified class cannot be
-     *                         constructed
+     *  @throws  RuntimeException   if an object of the specified class cannot
+     *                              be constructed with no parameters
      **/
-    public static Grid constructGrid(Class cls)
+    public static Grid constructGrid(Class<? extends Grid> cls)
     {
         return (Grid)constructObject(cls, UNBOUNDED_ARGS, null);
     }
@@ -180,10 +263,12 @@ public class GridPkgFactory
      *  dimensions must be specified.
      *  @param   cls  	class of new grid
      *  @return  the newly created grid
-     *  @throws MBSException   if an grid of the specified class cannot be
-     *                         constructed with the given number of rows and columns
+     *  @throws  RuntimeException   if an object of the specified class cannot
+     *                              be constructed with the specified
+     *                              number of rows and columns
      **/
-    public static Grid constructGrid(Class cls, int numRows, int numCols)
+    public static Grid constructGrid(Class<? extends Grid> cls, int numRows,
+                                     int numCols)
     {
         Object[] parameters = {new Integer(numRows), new Integer(numCols)};
         return (Grid)constructObject(cls, BOUNDED_ARGS, parameters);
@@ -195,7 +280,7 @@ public class GridPkgFactory
      *  <code>addGridObjClassNames</code> method.
      *  @return  the set of grid object classes
      **/
-    public static Set gridObjectClasses() 
+    public static Set<? extends GridObject> gridObjectClasses() 
     { 
         return gridObjectClasses; 
     }
@@ -204,7 +289,7 @@ public class GridPkgFactory
      *  Classes are added to the factory via the <code>addBoundedClassNames</code> method.
      *  @return  the set of bounded grid classes
      **/
-    public static Set boundedGridClasses() 
+    public static Set<? extends Grid> boundedGridClasses() 
     {
         return boundedGridClasses; 
     }
@@ -213,22 +298,51 @@ public class GridPkgFactory
      *  Classes are added to the factory via the <code>addUnboundedClassNames</code> method.
      *  @return  the set of unbounded grid classes
      **/
-    public static Set unboundedGridClasses() 
+    public static Set<? extends Grid> unboundedGridClasses() 
     {
         return unboundedGridClasses; 
     }
     
     /** Helper to add new classes to the factory. Classes are specified by
-     *  string name. For each name, error-checking is done to ensure the name
+     *  name. For each name, error-checking is done to ensure the named
      *  class exists, is accessible, and has the proper constructor. If all checks
      *  out, the class is added to the appropriate set maintained by the factory.
      *  On errors, a message is printed and the class is skipped.
      *  @param  classNames an array of class names
-     *  @param  whichCategory  descriptive name for category 
-     *                         (e.g., "bounded grid")
+     *  @param  whichCategory  descriptive name for category: "bounded grid"
+     *                         for any bounded grid class or "unbounded grid"
+     *                         for any unbounded grid class; any other string
+     *                         will be taken to indicate a grid object class
      **/
     protected static void addClassesToFactory(String[] classNames, 
                                               String whichCategory)
+    {
+        if (whichCategory.equals("bounded grid"))
+        {
+            addClassesToFactory(classNames, ClassCategory.A_BOUNDED_GRID);
+        }
+        else if (whichCategory.equals("unbounded grid"))
+        {
+            addClassesToFactory(classNames, ClassCategory.AN_UNBOUNDED_GRID);
+        }
+        else 
+        {
+            addClassesToFactory(classNames, ClassCategory.A_GRID_OBJECT);
+        }
+    }
+   
+    /** Helper to add new classes to the factory. Classes are specified by
+     *  name. For each name, error-checking is done to ensure the named
+     *  class exists, is accessible, and has the proper constructor. If all checks
+     *  out, the class is added to the appropriate set maintained by the factory.
+     *  On errors, a message is printed and the class is skipped.
+     *  @param  classNames an array of class names
+     *  @param  whichCategory  specifies whether the classes being added are
+     *                         for bounded grids, unbounded grids, or grid
+     *                         objects
+     **/
+    protected static void addClassesToFactory(String[] classNames, 
+                                              ClassCategory whichCategory)
     {
         for (int i = 0; i < classNames.length; i++) 
         {
@@ -237,12 +351,12 @@ public class GridPkgFactory
             try 
             {
                 Class cls = Class.forName(classNames[i]);
-                if (whichCategory.equals("bounded grid"))
+                if (whichCategory == ClassCategory.A_BOUNDED_GRID)
                 {
                     if (isValidGridClass(cls, BOUNDED_ARGS))
                         boundedGridClasses.add(cls);
                 }
-                else if (whichCategory.equals("unbounded grid"))
+                else if (whichCategory == ClassCategory.AN_UNBOUNDED_GRID)
                 {
                     if (isValidGridClass(cls, UNBOUNDED_ARGS))
                         unboundedGridClasses.add(cls);
@@ -276,7 +390,28 @@ public class GridPkgFactory
      **/
     public static void addGridObjClassNames(String[] classNames)
     {
-        addClassesToFactory(classNames, "grid object");
+        for (int i = 0; i < classNames.length; i++) 
+        {
+            String errStart = "Discarding " + ClassCategory.A_GRID_OBJECT +
+                              " choice \"" + classNames[i] + "\" because ";
+            try 
+            {
+                Class<?> cls = Class.forName(classNames[i]);
+                    gridObjectClasses.add(cls);
+            }
+            catch (ClassNotFoundException e)
+            {
+                System.err.println(errStart + "no class found with that name.");
+            } 
+            catch (ClassCastException e)
+            {
+                System.err.println(errStart + e.getMessage());
+            }
+            catch (NoSuchMethodException e) 
+            {
+                System.err.println(errStart + "it doesn't have the proper constructor.");
+            } 
+        }
     }
         
     /** Adds bounded grid classes to the set maintained by the factory. 
@@ -286,7 +421,7 @@ public class GridPkgFactory
      **/
     public static void addBoundedGridClassNames(String[] classNames)
     {
-        addClassesToFactory(classNames, "bounded grid");
+        addClassesToFactory(classNames, ClassCategory.A_BOUNDED_GRID);
     }
 
 
@@ -297,7 +432,7 @@ public class GridPkgFactory
      **/
     public static void addUnboundedGridClassNames(String[] classNames)
     {
-        addClassesToFactory(classNames, "unbounded grid");
+        addClassesToFactory(classNames, ClassCategory.AN_UNBOUNDED_GRID);
     }
     
     /** Verifies that a class has the required constructor and
@@ -305,8 +440,8 @@ public class GridPkgFactory
       *  grid classes given to the factory before
       *  adding them to the list of known classes.
      **/
-    public static boolean isValidGridClass(Class cls,
-                                          Class[] ctorParameters)
+    public static boolean isValidGridClass(Class<?> cls,
+                                           Class<?>[] ctorParameters)
     throws NoSuchMethodException
     {	
         return hasCorrectCtor(cls, Grid.class, ctorParameters);
@@ -317,8 +452,8 @@ public class GridPkgFactory
       *  grid object classes given to the factory before
       *  adding them to the list of known classes.
      **/
-    public static boolean isValidGridObjectClass(Class cls,
-                                                Class[] ctorParameters)
+    public static boolean isValidGridObjectClass(Class<?> cls,
+                                                 Class<?>[] ctorParameters)
     throws NoSuchMethodException
     {	
         return hasCorrectCtor(cls, GridObject.class, ctorParameters);
@@ -328,13 +463,13 @@ public class GridPkgFactory
       *  is properly assignable. This is used to vet classes
       *  given to the factory before adding them to the list of known classes.
      **/
-    protected static boolean hasCorrectCtor(Class cls, Class requiredCls,
-                                            Class[] ctorParameters)
+    protected static boolean hasCorrectCtor(Class<?> cls, Class<?> requiredCls,
+                                            Class<?>[] ctorParameters)
     throws NoSuchMethodException
     {	
             if (!requiredCls.isAssignableFrom(cls)) 
                 throw new ClassCastException("not compatible with " + requiredCls + ".");
-            Constructor ctor = cls.getConstructor(ctorParameters);
+            Constructor<?> ctor = cls.getConstructor(ctorParameters);
             return true;
     }
     
@@ -343,7 +478,7 @@ public class GridPkgFactory
      *  four-arg constructor that takes Grid, Location, Direction,
      *  and Color.
      **/
-    public static boolean hasFourArgCtor(Class cls)
+    public static boolean hasFourArgCtor(Class<?> cls)
     {
         try 
         {
@@ -351,6 +486,36 @@ public class GridPkgFactory
         }
         catch (NoSuchMethodException e) {}
         return false;
+    }
+
+    protected static class ClassCategory
+    {
+        // Public constants specifying categories of objects made by this factory.
+
+        /** Indicates a class representing a bounded grid with a two-parameter
+         *  constructor specifying the number of rows and number of columns
+         *  in the grid.
+         **/
+        protected static ClassCategory A_BOUNDED_GRID = new ClassCategory(0);
+
+        /** Indicates a class representing an unbounded grid with a default
+         *  (no-parameter) constructor.
+         **/
+        protected static ClassCategory AN_UNBOUNDED_GRID = new ClassCategory(1);
+
+        /** Indicates a class representing a bounded grid. **/
+        protected static ClassCategory A_GRID_OBJECT = new ClassCategory(2);
+
+        // The value that makes each category unique.
+        private int value;
+
+        /** Constructs a new ClassCategory object.
+         * 	  @param categoryCode  an integer value specifying a class category
+         */
+        protected ClassCategory(int categoryCode)
+        {
+            value = categoryCode;
+        }
     }
 
 }

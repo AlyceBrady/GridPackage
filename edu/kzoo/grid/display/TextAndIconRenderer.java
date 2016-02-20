@@ -67,10 +67,10 @@ public class TextAndIconRenderer extends JLabel
      **/
     public Component getListCellRendererComponent(JList list,
                 Object value, int index,
-                boolean selected, boolean cellHasFocus) 
+                boolean isSelected, boolean cellHasFocus) 
     {
-        setBackground(selected ? list.getSelectionBackground() : list.getBackground());
-        setForeground(selected ? list.getSelectionForeground() : list.getForeground());
+        setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
+        setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
         if (!cb.isEnabled())
         {
             setText("No choice"); // draw differently when disabled

@@ -75,7 +75,6 @@ public class GridEditor extends GridAppFrame
      *  specified frame.
      *  Use the constructWindowContents method to set the properties of the
      *  window and make it visible.
-     *    @param grid   the grid to edit
      *    @param frame  the frame that invoked this grid editor
      **/
     public GridEditor(GridAppFrame frame)
@@ -99,7 +98,7 @@ public class GridEditor extends GridAppFrame
 
     /** Constructs the display for a GridEditor.
      *    @param title frame title
-     *    @param backgroundColor color to paint background of grid
+     *    @param bgColor color to paint background of grid
      *    @param viewingWidth  the width of the viewing area
      *    @param viewingHeight the height of the viewing area
      *    @param minCellSize   minimum grid cell side length

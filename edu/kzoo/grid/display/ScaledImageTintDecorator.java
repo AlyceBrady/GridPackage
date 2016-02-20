@@ -44,7 +44,7 @@ import edu.kzoo.grid.GridObject;
  */
 public class ScaledImageTintDecorator implements DisplayDecorator
 {
-    private HashMap tintedVersions = new HashMap();
+    private HashMap<Color,Image> tintedVersions = new HashMap<Color,Image>();
 
 	/**
 	 * Decorate the ScaledImageDisplay so that it appears tinted.

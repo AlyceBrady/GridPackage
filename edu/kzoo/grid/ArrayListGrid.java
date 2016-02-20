@@ -244,7 +244,7 @@ public class ArrayListGrid
                     implements Grid.InternalRepresentation
     {
       // instance variables: encapsulated data for each ArrayListGridRep object
-        private ArrayList objectList;   // list of objects in a grid
+        private ArrayList<GridObject> objectList;   // list of objects in a grid
         private Grid.ValidityChecker locationValidityChecker;
 
       // constructors
@@ -255,7 +255,7 @@ public class ArrayListGrid
          **/
         protected ArrayListGridRep(Grid.ValidityChecker checker)
         {
-            objectList = new ArrayList();
+            objectList = new ArrayList<GridObject>();
             locationValidityChecker = checker;
         }
 

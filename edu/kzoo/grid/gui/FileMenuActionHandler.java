@@ -155,7 +155,6 @@ public class FileMenuActionHandler
     /** Invokes the appropriate grid editor to edit the grid from the
      *  parent frame.  Should be redefined in subclasses that support
      *  a grid editor, to construct and run the editor.
-     *    @param grid   the grid to edit
      **/
     protected void invokeEditor()
     {

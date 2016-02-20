@@ -37,9 +37,10 @@ package edu.kzoo.grid;
  *  <table align="center">
  *  <tr><td>numObjects</td><td width="5"><td><i>O</i>(<code>1</code>)</td></tr>
  *  <tr><td>allObjects</td><td></td><td><i>O</i>(<code>r * c</code>)</td></tr>
- *  <tr><td>isEmpty, objectAt</td><td></td><td><i>O</i>(<code>1</code>)</td></tr>
+ *  <tr><td>isValid, isEmpty, objectAt</td><td></td><td><i>O</i>(<code>1</code>)</td></tr>
  *  <tr><td>add</td><td></td><td><i>O</i>(<code>1</code>)</td></tr>
  *  <tr><td>remove</td><td></td><td><i>O</i>(<code>1</code>)</td></tr>
+ *  <tr><td>removeAll</td><td></td><td><i>O</i>(<code>r * c</code>)</td></tr>
  *  <tr><td>space</td><td></td><td><i>O</i>(<code>r * c</code>)</td></tr>
  *  </table>
  *  where <code>r</code> is the number of rows and <code>rc</code> is the

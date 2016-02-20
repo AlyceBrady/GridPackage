@@ -36,7 +36,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -81,13 +80,17 @@ public class GridAppFrame extends JFrame implements GridDisplay
 
   // instance variables
     private Grid grid = null;
-    private Collection gridChangeListeners = new HashSet();
+    private Collection<GridChangeListener> gridChangeListeners =
+                                    new HashSet<GridChangeListener>();
     private ScrollableGridDisplay display = null;
 
     private JPanel controlButtonsAtTopOfPanel = null;
-    private Collection componentsNeedingGrid = new HashSet();
-    private Collection componentsEnabledWhenWaiting = new HashSet();
-    private Collection componentsEnabledWhenRunning = new HashSet();
+    private Collection<JComponent> componentsNeedingGrid =
+                                                new HashSet<JComponent>();
+    private Collection<JComponent> componentsEnabledWhenWaiting =
+                                                new HashSet<JComponent>();
+    private Collection<JComponent> componentsEnabledWhenRunning =
+                                                new HashSet<JComponent>();
     private boolean inRunningMode = false;
 
     private int min_delay_msecs = DEFAULT_MIN_DELAY_MSECS, 
@@ -308,13 +311,11 @@ public class GridAppFrame extends JFrame implements GridDisplay
      *     @param enableDisableIndicator indicates when the components should
      *                                   be enabled or disabled
      **/
-    public void includeControlComponents(ArrayList componentList,
+    public void includeControlComponents(ArrayList<JComponent> componentList,
                                          int enableDisableIndicator)
     {
-        Iterator iter = componentList.iterator();
-        while ( iter.hasNext() )
+        for ( JComponent component : componentList )
         {
-            JComponent component = (JComponent) iter.next();
             includeControlComponent(component, enableDisableIndicator);
         }
     }
@@ -453,7 +454,7 @@ public class GridAppFrame extends JFrame implements GridDisplay
   // methods that access this object's state, including methods
   // required by the GridDisplay interface
 
-    /** Sets the grid being displayed.
+    /** Sets the grid being displayed (and displays it without any pause).
      *    @param grid the Grid to display
      **/
     public void setGrid(Grid grid)
@@ -463,8 +464,7 @@ public class GridAppFrame extends JFrame implements GridDisplay
         enableAndDisable();
     }
 
-    /** Returns the grid at the center of this graphical user
-     *  interface.
+    /** Returns the grid at the center of this graphical user interface.
      *    @return the grid
      */
     public Grid getGrid()
@@ -472,7 +472,9 @@ public class GridAppFrame extends JFrame implements GridDisplay
         return grid;
     }
 
-    /** Shows the grid.
+    /** Shows the grid (and pauses if a delay has been set either
+     *  by a speed slider bar or by a call to the <code>setDelay</code>
+     *  method).
      *  (Precondition: must have called <code>setGrid</code>.)
      **/
     public void showGrid()
@@ -496,8 +498,8 @@ public class GridAppFrame extends JFrame implements GridDisplay
         return display;
     }
 
-    /** Returns a mouse adapter that responds to mouse presses over
-     *  the grid display.
+    /** Returns a mouse adapter that responds to mouse clicks, presses, and
+     *  releases over the grid display.
      *  Subclasses that wish to respond to other mouse events should
      *  redefine this method to return a subclass of DisplayMouseListener
      *  (or another MouseAdapter subclass) that handles other mouse events.
@@ -527,7 +529,7 @@ public class GridAppFrame extends JFrame implements GridDisplay
     /** Returns the set of components that should be enabled only when the
      *  current grid is not null.
      **/
-    protected Collection componentsEnabledOnlyIfGridSet()
+    protected Collection<JComponent> componentsEnabledOnlyIfGridSet()
     {
         return componentsNeedingGrid;
     }
@@ -535,7 +537,7 @@ public class GridAppFrame extends JFrame implements GridDisplay
     /** Returns the set of components that should be enabled only when the
      *  application is ready and waiting for user input.
      **/
-    protected Collection componentsEnabledOnlyWhenWaiting()
+    protected Collection<JComponent> componentsEnabledOnlyWhenWaiting()
     {
         return componentsEnabledWhenWaiting;
     }
@@ -544,7 +546,7 @@ public class GridAppFrame extends JFrame implements GridDisplay
      *  application is actively running, and should be disabled when the
      *  application is ready and waiting for user input.
      **/
-    protected Collection componentsEnabledOnlyWhenRunning()
+    protected Collection<JComponent> componentsEnabledOnlyWhenRunning()
     {
         return componentsEnabledWhenRunning;
     }
@@ -728,21 +730,35 @@ public class GridAppFrame extends JFrame implements GridDisplay
      **/
     public void notifyGridChangeListeners()
     {
-        Iterator it = gridChangeListeners.iterator();
-        while ( it.hasNext() )
+        for ( GridChangeListener listener : gridChangeListeners )
         {
-            GridChangeListener listener = (GridChangeListener)it.next();
             listener.reactToNewGrid(getGrid());
         }
     }
 
   // Methods for handling user-initiated events
 
+    /** Handles a mouse click over the grid display.
+     *  Currently does nothing, but can be redefined in subclasses
+     *  to handle actions.
+     **/
+    protected void onMouseClickOverDisplay(Location loc)
+    {
+    }
+
     /** Handles a mouse press over the grid display.
      *  Currently does nothing, but can be redefined in subclasses
      *  to handle actions.
      **/
     protected void onMousePressOverDisplay(Location loc)
+    {
+    }
+
+    /** Handles a mouse release over the grid display.
+     *  Currently does nothing, but can be redefined in subclasses
+     *  to handle actions.
+     **/
+    protected void onMouseReleaseOverDisplay(Location loc)
     {
     }
 
@@ -769,23 +785,21 @@ public class GridAppFrame extends JFrame implements GridDisplay
     {
         // Tool tips should not be enabled while in running mode.
         if ( getDisplay() != null )
-            getDisplay().setToolTipsEnabled(!isInRunningMode());
+            if ( isInRunningMode() )
+                getDisplay().temporarilyDisableToolTips();
+            else
+                getDisplay().resetToolTips();
            
         // Deal with components that should be enabled only if there is a grid.
-        Iterator it = componentsEnabledOnlyIfGridSet().iterator();
-        while ( it.hasNext() )
+        for ( JComponent component : componentsEnabledOnlyIfGridSet() )
         {
-            JComponent component = (JComponent) it.next();
             component.setEnabled(getGrid() != null);
         }
             
         // Deal with components that should be enabled only in running mode
         // (which may or may not also require a grid).
-        it = componentsEnabledOnlyWhenRunning().iterator();
-        while ( it.hasNext() )
+        for ( JComponent component : componentsEnabledOnlyWhenRunning() )
         {
-            JComponent component = (JComponent) it.next();
-
             // If component needs grid, enable only if it is set.
             component.setEnabled(isInRunningMode() &&
                                  ( ! componentRequiresGrid(component) ||
@@ -794,11 +808,8 @@ public class GridAppFrame extends JFrame implements GridDisplay
 
         // Deal with components that should be disabled in running mode
         // (which may or may not also require a grid).
-        it = componentsEnabledOnlyWhenWaiting().iterator();
-        while ( it.hasNext() )
+        for ( JComponent component : componentsEnabledOnlyWhenWaiting() )
         {
-            JComponent component = (JComponent) it.next();
-
             // If component needs grid, enable only if it is set.
             component.setEnabled( ! isInRunningMode() &&
                                   ( ! componentRequiresGrid(component) ||
@@ -810,16 +821,32 @@ public class GridAppFrame extends JFrame implements GridDisplay
 
     /** Nested class that handles simple mouse presses over the grid
      *  display.  Can be extended to handle other mouse events (mouse
-     *  release, mouse click, etc.).
+     *  entered, mouse exited).
      **/
     public class DisplayMouseListener extends MouseAdapter
     {
+        // Redefined method from MouseAdapter
+        public void mouseClicked(MouseEvent evt)
+        {
+            Location loc = getMouseLocation(evt);
+            if ( loc != null )
+                onMouseClickOverDisplay(loc);
+        }
+
         // Redefined method from MouseAdapter
         public void mousePressed(MouseEvent evt)
         {
             Location loc = getMouseLocation(evt);
             if ( loc != null )
                 onMousePressOverDisplay(loc);
+        }
+
+        // Redefined method from MouseAdapter
+        public void mouseReleased(MouseEvent evt)
+        {
+            Location loc = getMouseLocation(evt);
+            if ( loc != null )
+                onMouseReleaseOverDisplay(loc);
         }
 
         /** Returns the Location in the grid corresponding to the location

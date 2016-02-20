@@ -20,7 +20,6 @@
 
 package edu.kzoo.grid.gui;
 
-import edu.kzoo.grid.BoundedGrid;
 import edu.kzoo.grid.Grid;
 
 import java.awt.Component;
@@ -60,7 +59,9 @@ public class GridCreationDialog
 
   // factory methods
 
-    /** Creates a dialog that creates a <code>BoundedGrid</code> object
+    /** Creates a dialog that creates a bounded grid object
+     *  (using <code>BoundedGrid</code> or whatever has been defined as
+     *  the default bounded grid in the <code>GridPkgFactory</code>)
      *  after prompting the user for its dimensions.
      *      @param  parent    parent frame for the dialog
      *      @return a dialog that will prompt for bounded grid
@@ -79,13 +80,15 @@ public class GridCreationDialog
      *  the <code>GridPkgFactory</code>.  If any bounded grid classes
      *  have been registered with the <code>GridPkgFactory</code>, then
      *  the dialog will include them in the set of options.  Otherwise,
-     *  it will include <code>BoundedGrid</code> as its only bounded
+     *  it will include the default bounded grid specified in the
+     *  <code>GridPkg</code> class as its only bounded
      *  grid.  Similarly, if any unbounded grid classes have been
      *  registered with the <code>GridPkgFactory</code>, then the dialog
      *  will include them in the set of options.  Otherwise, it will
-     *  include <code>UnboundedArrayListGrid</code> as its only unbounded
-     *  grid.  <code>BoundedGrid</code> and <code>UnboundedArrayListGrid</code>
-     *  must explicitly be registered with the <code>GridPkgFactory</code> to
+     *  include the default unbounded grid specified in the
+     *  <code>GridPkg</code> class as its only unbounded
+     *  grid.  The default bounded and unbounded grids must
+     *  explicitly be registered with the <code>GridPkgFactory</code> to
      *  appear along with other options from the factory.
      *      @param  parent    parent frame for the dialog
      *      @return a dialog that prompts for an Grid representation
@@ -104,7 +107,8 @@ public class GridCreationDialog
      *      @param  promptForGridChoice <code>true</code> if dialog should
      *                    prompt for choice of grid representation;
      *                    <code>false</code> if it should always create
-     *                    a <code>BoundedGrid</code> grid
+     *                    a grid of the type returned by
+     *                    <code>GridPkgFactory.getDefaultBoundedGridClass</code>
      **/
     protected GridCreationDialog(JFrame parent, boolean promptForGridChoice)
     {
@@ -221,7 +225,7 @@ public class GridCreationDialog
     {
         userClickedOK = false;
 
-        // Show the dialog box; will block until setVisible(false), see ok/cancel methods/
+        // Show the dialog box; will block until setVisible(false), see ok/cancel methods.
         // Dialog box is shown in middle of parent frame.
         rowField.requestFocus();
         Component parent = dialog.getParent();
@@ -229,9 +233,10 @@ public class GridCreationDialog
                            parent.getY() + parent.getHeight()/2 - dialog.getSize().height/2);
         dialog.show();   // Modal dialog will block until user clicks ok/cancel
 
-        // User selected grid and/or dimensions, so create grid.
         if ( ! userClickedOK ) 	// if user cancelled or closed dialog
             return null;	// return null
+
+        // User selected grid and/or dimensions, so create grid.
         try 
         {
             if ( promptForGridChoice )
@@ -244,8 +249,8 @@ public class GridCreationDialog
                     return GridPkgFactory.constructGrid(selectedClass);
             }
             else
-                return GridPkgFactory.constructGrid(BoundedGrid.class,
-                                               numRows, numCols);
+                return GridPkgFactory.constructGrid(GridPkgFactory.getDefaultBoundedGridClass(),
+                                                    numRows, numCols);
         }
         catch (Exception ex)
         {

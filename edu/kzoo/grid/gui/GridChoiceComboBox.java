@@ -39,6 +39,8 @@ import java.util.Set;
  **/
 public class GridChoiceComboBox extends JComboBox
 {    
+    private static final long serialVersionUID = 3532436510757444069L;
+
     private GridChoice gridChoice;
 
     /** Adds bounded grid classes to the combo box.  If the

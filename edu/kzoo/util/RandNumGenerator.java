@@ -77,8 +77,6 @@ public class RandNumGenerator extends Random
     /** Sets the seed of this random number generator using a single
      *  <code>long</code> seed.  For more technical details, see the
      *  class documentation for the <code>Random</code> class.
-     *     @return a pseudorandom, uniformly distributed <code>boolean</code>
-     *             value from this random number generator's sequence 
      *     @see java.util.Random#setSeed(long)
      **/
     public void setSeed(long seed)

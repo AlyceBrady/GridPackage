@@ -46,7 +46,8 @@ public abstract class ScaledDisplay implements GridObjectDisplay
 {        
 	
 	// Instance Variables
-	private ArrayList decorations = new ArrayList();
+	private ArrayList<DisplayDecorator> decorations =
+	                                    new ArrayList<DisplayDecorator>();
 	
     /** Draw the given GridObject object.
      *  Subclasses should implement this method to draw the object in a 
@@ -80,11 +81,9 @@ public abstract class ScaledDisplay implements GridObjectDisplay
         g2.setStroke(new BasicStroke(1.0f/scaleFactor));
 
         // Apply the decorators
-        if (!decorations.isEmpty()) {
-        	for (int i = 0; i < decorations.size(); i++) {
-        		((DisplayDecorator)decorations.get(i)).decorate(this, obj, comp, g2);
-        	}
-       	
+        for ( DisplayDecorator decorator : decorations )
+        {
+            decorator.decorate(this, obj, comp, g2);
         }
 
         // Adjust (e.g., rotate) as necessary.

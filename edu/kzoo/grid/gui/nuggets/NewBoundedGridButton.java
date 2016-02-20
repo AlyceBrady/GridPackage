@@ -14,18 +14,18 @@
 
 package edu.kzoo.grid.gui.nuggets;
 
-import edu.kzoo.grid.BoundedGrid;
 import edu.kzoo.grid.Grid;
 import edu.kzoo.grid.gui.ControlButton;
 import edu.kzoo.grid.gui.GridAppFrame;
 import edu.kzoo.grid.gui.GridCreationDialog;
+import edu.kzoo.grid.gui.GridPkgFactory;
 
 /**
  *  Grid GUI Nuggets Package (Handy Grid GUI Components):<br>
  *
  *    The <code>NewBoundedGridButton</code> class represents a button
- *    that prompts the user for the dimensions of a new grid and then
- *    constructs that grid.
+ *    that prompts the user for the dimensions of a new bounded grid
+ *    and then constructs that grid.
  *
  *  @author Alyce Brady
  *  @version 1 September 2004
@@ -39,8 +39,11 @@ public class NewBoundedGridButton extends ControlButton
   // constructor
 
     /** Constructs a button labeled "Create New Grid" that will create a
-     *  new BoundedGrid object with dimensions specified by the user
-     *  through a dialog box.
+     *  new bounded grid with dimensions specified by the user
+     *  through a dialog box.  The new bounded grid will be of the type
+     *  returned by the GridPkgFactory.getDefaultBoundedGridClass method.
+     *  Use the GridPkgFactory.setDefaultBoundedGridClass method to change
+     *  the bounded grid type.
      *    @param gui graphical user interface containing this button
      **/
     public NewBoundedGridButton(GridAppFrame gui)
@@ -48,8 +51,12 @@ public class NewBoundedGridButton extends ControlButton
         this(gui, "Create New Grid");
     }
 
-    /** Constructs a button that will create a new BoundedGrid object with
-     *  dimensions specified by the user through a dialog box.
+    /** Constructs a button that will create a new bounded grid with
+     *  dimensions specified by the user through a dialog box.  The new
+     *  bounded grid will be of the type returned by the
+     *  GridPkgFactory.getDefaultBoundedGridClass method.
+     *  Use the GridPkgFactory.setDefaultBoundedGridClass method to change
+     *  the bounded grid type.
      *    @param gui graphical user interface containing this button
      *    @param label  label to place on button
      **/
@@ -67,14 +74,16 @@ public class NewBoundedGridButton extends ControlButton
         GridAppFrame gui = getGUI();
 
         // Ask user for grid dimensions.
+        // Using user-provided grid dimensions (or default 10 x 10),
+        // construct the grid.
         if ( gridCreationDialog == null )
             gridCreationDialog = GridCreationDialog.makeDimensionsDialog(gui);
         Grid newGrid = gridCreationDialog.showDialog();
-
-        // Using user-provided grid dimensions (or default 10 x 10),
-        // construct the grid.
         if ( gui.getGrid() == null && newGrid == null )
-            newGrid = new BoundedGrid(10, 10);
+        {
+            GridPkgFactory.constructGrid(GridPkgFactory.getDefaultBoundedGridClass(),
+                                         10, 10);
+        }
         if ( newGrid != null )
             gui.setGrid(newGrid);
     }

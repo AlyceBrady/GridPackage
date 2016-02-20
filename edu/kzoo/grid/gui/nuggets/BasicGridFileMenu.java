@@ -137,7 +137,6 @@ public class BasicGridFileMenu extends MinimalFileMenu
 
     /** Creates the File drop-down menu on the frame.
      *  (Precondition: fileMenuActionHandler is not null.)
-     *    @return the file menu
      **/
     protected void makeFileMenu()
     {

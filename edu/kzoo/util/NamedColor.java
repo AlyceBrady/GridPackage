@@ -130,7 +130,7 @@ public class NamedColor extends Color
      *    @param c    the <code>Color</code> object to convert to a
      *                <code>NamedColor</code> object
      *    @param name the name to associate with the given color
-     *    @throws <code>IllegalArgumentException</code> if there is already
+     *    @throws IllegalArgumentException if there is already
      *            a name => color association involving either <code>c</code>
      *            or <code>name</code>
      **/
@@ -165,7 +165,7 @@ public class NamedColor extends Color
      *    @param g the green component 
      *    @param b the blue component 
      *    @param name the name to associate with the given color
-     *    @throws <code>IllegalArgumentException</code> if there is already
+     *    @throws IllegalArgumentException if there is already
      *            a name => color association involving either <code>c</code>
      *            or <code>name</code>
      **/
@@ -201,7 +201,7 @@ public class NamedColor extends Color
      *    @param b the blue component 
      *    @param a the alpha component
      *    @param name the name to associate with the given color
-     *    @throws <code>IllegalArgumentException</code> if there is already
+     *    @throws IllegalArgumentException if there is already
      *            a name => color association involving either <code>c</code>
      *            or <code>name</code>
      **/
@@ -219,7 +219,7 @@ public class NamedColor extends Color
      *  color, nor is there already a color associated with the given name.)
      *    @param name the name to associate with the color <code>c</code>
      *    @param c    the color
-     *    @throws <code>IllegalArgumentException</code> if there is already
+     *    @throws IllegalArgumentException if there is already
      *            a name => color association involving either <code>c</code>
      *            or <code>name</code>
      **/
@@ -379,7 +379,7 @@ public class NamedColor extends Color
      *  (Precondition: there is not already a name associated with this
      *  color.)
      *    @param name the name to associate with this color
-     *    @throws <code>IllegalArgumentException</code> if there is already
+     *    @throws IllegalArgumentException if there is already
      *            a name => color association involving either <code>c</code>
      *            or <code>name</code>
      **/
@@ -479,7 +479,7 @@ public class NamedColor extends Color
          *  appears in the map already.
          *    @param name the name of the color
          *    @param c the color to add
-         *    @throws <code>IllegalArgumentException</code> if either
+         *    @throws IllegalArgumentException if either
          *            <code>c</code> or <code>name</code> are already in the
          *            map
          **/

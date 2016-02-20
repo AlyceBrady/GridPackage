@@ -56,7 +56,6 @@ public interface GridObjectDisplay
      *  rectangle.
      *
      *  @param   obj        object we want to draw
-     *  @param   comp       component on which to draw
      *  @param   g2         drawing surface
      *  @param   rect       rectangle in which to draw 
      **/

@@ -34,8 +34,8 @@ public class DefaultDisplayFactory
     private static String baseImageDirectories[] = {""};
     private static String baseSuffixes[] = {"gif", "GIF",
                                             "jpg", "jpeg", "JPG", "JPEG"};
-    private static HashSet imageDirectories = new HashSet();
-    private static HashSet suffixes = new HashSet();
+    private static HashSet<String> imageDirectories = new HashSet<String>();
+    private static HashSet<String> suffixes = new HashSet<String>();
 
     static
     {
@@ -92,8 +92,7 @@ public class DefaultDisplayFactory
      *          or any added with the <code>addSuffix</code> method)
      *  If no default display specific to the given class is available,
      *  this method returns <code>null</code>.
-     *      @param className  the name of the class for which to find
-     *                        a default display
+     *      @param cls  the class for which to find a default display
      **/
     public static GridObjectDisplay getDefaultDisplay(Class cls)
     {

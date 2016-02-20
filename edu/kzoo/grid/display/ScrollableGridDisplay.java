@@ -52,6 +52,20 @@ import java.awt.geom.AffineTransform;
  *
  *  A <code>ScrollableGridDisplay</code> is a panel containing a
  *  scrollable graphical display of a grid.
+ * 
+ *  <p>
+ *  There are a number of default settings that can be used or
+ *  overridden:
+ *      <blockquote><table>
+ *      <tr><th>Setting</th><th>Default Value</th></tr>
+ *      <tr><td>minimum cell size</td><td>8 pixels</td></tr>
+ *      <tr><td>dimensions for viewing area</td><td>420 x 420 (pixels)</td></tr>
+ *      <tr><td>background display</td><td>solid background color</td></tr>
+ *      <tr><td>background color</td><td>ocean blue (Color(75, 75, 255))</td></tr>
+ *      <tr><td>grid lines</td><td>visible</td></tr>
+ *      <tr><td>tool tips</td><td>enabled</td></tr>
+ *      <tr><td>tool tip information</td><td>content's toString info</td></tr>
+ *      </table></blockquote>
  *
  *  @author Alyce Brady (based on MBSDisplay by Julie Zelenski)
  *  @version 13 February 2004
@@ -77,7 +91,8 @@ public class ScrollableGridDisplay extends JPanel
                   originRow, originCol;    // row and column representing origin
     protected GridBackgroundDisplay backgroundDisplay;
     protected Color bgColor;
-    protected boolean toolTipsEnabledFlag;
+    protected boolean toolTipsSetEnabledFlag;   // whether tool tips should be enabled
+    protected boolean toolTipsEnabledFlag;      // whether tool tips are currently enabled
     protected int toolTipsType = OBJECT_STRING_TOOL_TIPS;
 
 
@@ -201,7 +216,8 @@ public class ScrollableGridDisplay extends JPanel
         gridLineWidth = calculateGridLineWidth();
         numRows = numCols = 0;
         originRow = originCol = 0;
-        setToolTipsEnabled(false);
+        setToolTipsEnabled(true);
+        temporarilyDisableToolTips();
         addComponentListener(new ComponentAdapter()
             {   public void componentResized(ComponentEvent e)
                     { JViewport vp = getEnclosingViewport();
@@ -216,6 +232,7 @@ public class ScrollableGridDisplay extends JPanel
     /** Sets the Grid being displayed.  Sets the cell size to
      *  be the largest that fits the entire grid in the current 
      *  viewing area (uses a default minimum if grid is too large).
+     *  Turns tool tips on (unless the grid parameter is null).
      *  @param grid the Grid to display
      **/
     public void setGrid(Grid grid)
@@ -225,7 +242,7 @@ public class ScrollableGridDisplay extends JPanel
             vp.setViewPosition(new Point(0, 0));
 
         theGrid = grid;
-        setToolTipsEnabled(grid != null);
+        resetToolTips();
 
         if ( grid == null )
             return;
@@ -266,7 +283,6 @@ public class ScrollableGridDisplay extends JPanel
      *  the number of rows and columns in the grid.  We use the largest
      *  cellSize that will fit in the viewable region, bounded to be at least
      *  the parameter minSize.
-     *  @param vp        the view port that represents the viewable region
      **/   
     protected void recalculateCellSize()
     {
@@ -629,10 +645,44 @@ public class ScrollableGridDisplay extends JPanel
             ToolTipManager.sharedInstance().registerComponent(this);  
         else
             ToolTipManager.sharedInstance().unregisterComponent(this);
-        toolTipsEnabledFlag = flag;
+        toolTipsSetEnabledFlag = toolTipsEnabledFlag = flag;
     }
 
-    /** Indicates whether tool tips have been enabled.
+    /** Indicates whether tool tips were set to be enabled.  It
+     *  is possible for this method to return <code>true</code> but
+     *  for <code>tooTipsEnabled</code> to return <code>false</code>\
+     *  if tool tips were set to be enabled but have been temporarily
+     *  disabled (if a stepped application is in running mode, for example).
+     *  @return <code>true</code> if tool tips are enabled; 
+     *          <code>false</code> otherwise
+     **/
+    public boolean toolTipsSetToBeEnabled()
+    {
+        return toolTipsSetEnabledFlag;
+    }
+
+    /** Temporarily disables tool tips (for a stepped application
+     *  that is in running mode, for example).
+     **/
+    public void temporarilyDisableToolTips()
+    {
+        ToolTipManager.sharedInstance().unregisterComponent(this);
+        toolTipsEnabledFlag = false;
+    }
+
+    /** Resets tool tips to be enabled or disabled, as specified by the
+     *  most recent call to the <code>setToolTipsEnabled</code> method.
+     **/
+    public void resetToolTips()
+    {
+        if (toolTipsSetEnabledFlag)
+            ToolTipManager.sharedInstance().registerComponent(this);  
+        else
+            ToolTipManager.sharedInstance().unregisterComponent(this);
+        toolTipsSetEnabledFlag = toolTipsEnabledFlag = toolTipsSetEnabledFlag;
+    }
+
+    /** Indicates whether tool tips are currently enabled.
      *  @return <code>true</code> if tool tips are enabled; 
      *          <code>false</code> otherwise
      **/

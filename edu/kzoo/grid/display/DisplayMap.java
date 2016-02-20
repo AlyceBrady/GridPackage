@@ -53,7 +53,8 @@ import java.util.HashMap;
 public class DisplayMap
 {
     // Class Variables: Not tied to any one DisplayMap object
-    private static HashMap map = new HashMap();  // the collection
+    private static HashMap<Class,GridObjectDisplay> map =
+                new HashMap<Class,GridObjectDisplay>();  // the collection
     private static GridObjectDisplay defaultDisplay = new DefaultDisplay();
 
     /** Associates a display object with a grid object class. If

@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  *  @author Alyce Brady
  *  @version 29 July 2004
  **/
-public class GeneratedButtonList extends ArrayList
+public class GeneratedButtonList extends ArrayList<ThreadedControlButton>
 {
     // Define pattern for on...ButtonClick methods.
     public static final String prefix = "on";
@@ -56,9 +56,10 @@ public class GeneratedButtonList extends ArrayList
     protected GridAppFrame gui;
     protected Object targetObj;
     protected boolean includeOnButtonClickMethodsOnly;
-    protected List targetMethods;
+    protected List<Method> targetMethods;
     protected Object[] methodArguments;
-    protected Map buttonLabelToMethodObjMap = new HashMap();
+    protected Map<String,Method> buttonLabelToMethodObjMap =   
+                                            new HashMap<String,Method>();
     protected boolean displayGridAfterButtonActions;
 
   // constructors and their helper methods
@@ -189,7 +190,7 @@ public class GeneratedButtonList extends ArrayList
      **/
     public GeneratedButtonList(GridAppFrame gui,
                                Object targetObj, Object[] arguments,
-                               boolean onClickButtonMethodsOnly,
+                               boolean onButtonClickMethodsOnly,
                                boolean displayAfterButtonPresses)
     {
         this.gui = gui;
@@ -198,7 +199,7 @@ public class GeneratedButtonList extends ArrayList
             this.methodArguments = new Object[0];
         else
             this.methodArguments = arguments;
-        this.includeOnButtonClickMethodsOnly = onClickButtonMethodsOnly;
+        this.includeOnButtonClickMethodsOnly = onButtonClickMethodsOnly;
         this.displayGridAfterButtonActions = displayAfterButtonPresses;
 
         // Identify the target object's methods that will have control buttons.
@@ -219,7 +220,7 @@ public class GeneratedButtonList extends ArrayList
         // take parameters corresponding to those provided in the
         // GeneratedButtonList constructor.)
         Class targetClass = targetObj.getClass();
-        targetMethods = new ArrayList();
+        targetMethods = new ArrayList<Method>();
         Method[] allMethods = targetClass.getMethods();
         for ( int i = 0; i < allMethods.length; i++ )
         {
@@ -297,16 +298,13 @@ public class GeneratedButtonList extends ArrayList
 
     /** Creates control buttons that, when pressed, will pass a message to
      *  the appropriate method in the target object.
-     *    @param targetMethods the methods for which to create control buttons
      **/
     protected void createButtons()
     {
-        Iterator iter = targetMethods.iterator();
-        while ( iter.hasNext() )
+        for ( Method meth : targetMethods )
         {
-            Method meth = (Method) iter.next();
             add(new GeneratedThreadedControlButton(gui, buttonLabelFor(meth),
-                                                displayGridAfterButtonActions));
+                    displayGridAfterButtonActions));
         }
     }
 
@@ -329,10 +327,8 @@ public class GeneratedButtonList extends ArrayList
     public void resetButtonLabel(String prevButtonLabel, String buttonLabel)
     {
         // Change the label on the button.
-        Iterator iter = iterator();
-        while ( iter.hasNext() )
+        for ( JButton button : this )
         {
-            JButton button = (JButton) iter.next();
             if ( button.getText().equals(prevButtonLabel) )
             {
                 button.setText(buttonLabel);

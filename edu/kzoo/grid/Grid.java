@@ -99,7 +99,7 @@ public abstract class Grid
      *  neighbors.
      *  @param rep  the internal representation for the grid and the
      *              objects it contains
-     *  @param includedDiagonalNeighbors    whether to include the four
+     *  @param includeDiagonalNeighbors    whether to include the four
      *                                      diagonal locations as neighbors
      **/
     protected Grid(InternalRepresentation rep,
@@ -205,9 +205,9 @@ public abstract class Grid
      *  @param  ofLoc       location whose neighbors to get
      *  @return a list of locations that are neighbors of <code>ofLoc</code>
      **/
-    public ArrayList neighborsOf(Location ofLoc)
+    public ArrayList<Location> neighborsOf(Location ofLoc)
     {
-        ArrayList nbrs = new ArrayList();
+        ArrayList<Location> nbrs = new ArrayList<Location>();
 
         Direction d = Direction.NORTH;
         for (int i = 0; i < numAdjacentNeighbors(); i++)
