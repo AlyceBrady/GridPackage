@@ -47,7 +47,8 @@ import java.util.Comparator;
  *  as allowed by the GNU General Public License.
  *
  *  @author Julie Zelenski (author of MBSFactory)
- *  @version 1 August 2002
+ *  @author Alyce Brady
+ *  @version 20 February 2016
  **/
 public class GridPkgFactory
 {
@@ -55,16 +56,14 @@ public class GridPkgFactory
     // of known grid object, BoundedGrid, and UnboundedArrayListGrid classes.
     // The comparator used for the TreeSets will keep the sets sorted by
     // class name.
-    private static Comparator classCmp = new Comparator() {
-        public int compare(Object o1, Object o2) { 
-            return o1.toString().compareTo(o2.toString());
+    private static Comparator<Class> classCmp = new Comparator<Class>() {
+        public int compare(Class c1, Class c2) { 
+            return c1.toString().compareTo(c2.toString());
         }};
-    private static Set<? extends GridObject> gridObjectClasses =
-                                        new TreeSet<GridObject>(classCmp);
-    private static Set<? extends Grid> boundedGridClasses =
-                                        new TreeSet<Grid>(classCmp);
-    private static Set<? extends Grid> unboundedGridClasses =
-                                        new TreeSet<Grid>(classCmp);
+    private static Set<Class> gridObjectClasses = new TreeSet<Class>(classCmp);
+    private static Set<Class> boundedGridClasses = new TreeSet<Class>(classCmp);
+    private static Set<Class> unboundedGridClasses =
+                                new TreeSet<Class>(classCmp);
 
     private static Class<? extends Grid> defaultBoundedGridClass = BoundedGrid.class;
     private static Class<? extends Grid> defaultUnboundedGridClass = ArrayListGrid.Unbounded.class;
@@ -280,7 +279,7 @@ public class GridPkgFactory
      *  <code>addGridObjClassNames</code> method.
      *  @return  the set of grid object classes
      **/
-    public static Set<? extends GridObject> gridObjectClasses() 
+    public static Set<Class> gridObjectClasses() 
     { 
         return gridObjectClasses; 
     }
@@ -289,7 +288,7 @@ public class GridPkgFactory
      *  Classes are added to the factory via the <code>addBoundedClassNames</code> method.
      *  @return  the set of bounded grid classes
      **/
-    public static Set<? extends Grid> boundedGridClasses() 
+    public static Set<Class> boundedGridClasses() 
     {
         return boundedGridClasses; 
     }
@@ -298,7 +297,7 @@ public class GridPkgFactory
      *  Classes are added to the factory via the <code>addUnboundedClassNames</code> method.
      *  @return  the set of unbounded grid classes
      **/
-    public static Set<? extends Grid> unboundedGridClasses() 
+    public static Set<Class> unboundedGridClasses() 
     {
         return unboundedGridClasses; 
     }
@@ -397,6 +396,8 @@ public class GridPkgFactory
             try 
             {
                 Class<?> cls = Class.forName(classNames[i]);
+                // If we were to check for validity, it would be based
+                // on what constructors?  (And how many?)
                     gridObjectClasses.add(cls);
             }
             catch (ClassNotFoundException e)
@@ -407,10 +408,10 @@ public class GridPkgFactory
             {
                 System.err.println(errStart + e.getMessage());
             }
-            catch (NoSuchMethodException e) 
-            {
-                System.err.println(errStart + "it doesn't have the proper constructor.");
-            } 
+//             catch (NoSuchMethodException e) 
+//             {
+//                 System.err.println(errStart + "it doesn't have the proper constructor.");
+//             } 
         }
     }
         
