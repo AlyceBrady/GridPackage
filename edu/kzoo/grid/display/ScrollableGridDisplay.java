@@ -23,10 +23,11 @@ import edu.kzoo.grid.Grid;
 import edu.kzoo.grid.GridObject;
 import edu.kzoo.grid.Location;
 
-import edu.kzoo.kgui.ScrollablePanel;
+import edu.kzoo.grid.gui.GridChangeListener;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -34,7 +35,10 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import javax.swing.JPanel;
 import javax.swing.JViewport;
+import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
 import javax.swing.ToolTipManager;
 
 import java.awt.event.MouseEvent;
@@ -51,8 +55,9 @@ import java.awt.geom.AffineTransform;
  *  @author Alyce Brady (based on MBSDisplay by Julie Zelenski)
  *  @version 13 February 2004
  **/
-public class ScrollableGridDisplay extends ScrollablePanel
-    implements GridDisplay, PseudoInfiniteViewport.Pannable
+public class ScrollableGridDisplay extends JPanel
+    implements GridDisplay, GridChangeListener, Scrollable, 
+    PseudoInfiniteViewport.Pannable
 {
     // Class constants
     public static final int DEFAULT_MIN_CELL_SIZE = 8, 
@@ -62,6 +67,8 @@ public class ScrollableGridDisplay extends ScrollablePanel
                                OBJECT_STRING_TOOL_TIPS = 1;
 
     // Encapsulated data used to monitor/display the grid
+    protected Grid theGrid;
+    protected Dimension preferredVPSize;   // preferred dimensions of viewing area
     protected int gridLineWidth,           // width of each grid line
                   minCellSize,             // minimum cell size, not including width of grid lines
                   outerCellSize,           // actual cell size, including width of grid lines
@@ -160,76 +167,10 @@ public class ScrollableGridDisplay extends ScrollablePanel
      *  @param backgroundColor color to paint background of grid
      **/
     public ScrollableGridDisplay(int viewingWidth, int viewingHeight,
-                                 int minimumCellSize, Color backgroundColor)
+                                int minimumCellSize, Color backgroundColor)
     {
-        this(null, viewingWidth, viewingHeight, minimumCellSize,
-             backgroundColor);
-    }
+        theGrid = null;
 
-    /** Constructs a new ScrollableGridDisplay object with the specified grid
-     *  and the specified dimensions and background color
-     *  (Precondition: <code>width</code> and <code>height</code> must be
-     *  at least as large as <code>minimumCellSize</code>.)
-     *  @param viewingWidth  the width of the viewing area
-     *  @param viewingHeight the height of the viewing area
-     *  @param minimumCellSize minimum cell side length
-     *  @param backgroundColor color to paint background of grid
-     **/
-    public ScrollableGridDisplay(Grid grid,
-                                 int viewingWidth, int viewingHeight,
-                                 int minimumCellSize, Color backgroundColor)
-    {
-        super(grid, viewingWidth, viewingHeight);
-
-        initSize(viewingWidth, viewingHeight, minimumCellSize);
-
-        if ( grid == null )
-        {
-            numRows = numCols = 0;
-            outerCellSize = 0;
-        }
-        else
-        {
-            if ( grid().numRows() == -1 )
-                numRows = 2000; // This determines the "virtual" size of the pan world
-            else
-                numRows = grid().numRows();
-        
-            if ( grid().numCols() == -1 )
-                numCols = 2000; // This determines the "virtual" size of the pan world
-            else
-                numCols = grid().numCols();
-
-            recalculateCellSize();
-        }
-        originRow = originCol = 0;
-
-        if ( backgroundColor != null )
-            bgColor = backgroundColor;
-        else
-            bgColor = OCEAN_BLUE;
-
-        setToolTipsEnabled(grid != null);
-
-        addComponentListener(new ComponentAdapter()
-            {   public void componentResized(ComponentEvent e)
-                    { JViewport vp = getEnclosingViewport();
-                      if (vp == null)
-                      {
-                          recalculateCellSize();
-                      }
-                    }
-            });
-    }
-
-    /** Initializes the size and related fields.
-     *    @param viewingWidth  the width of the viewing area
-     *    @param viewingHeight the height of the viewing area
-     *    @param minimumCellSize minimum cell side length
-     **/
-    protected void initSize(int viewingWidth, int viewingHeight,
-                            int minimumCellSize)
-    {
         if ( minimumCellSize > 0 )
             minCellSize = minimumCellSize;
         else
@@ -246,10 +187,76 @@ public class ScrollableGridDisplay extends ScrollablePanel
             origViewingWidth = Math.max(DEFAULT_VIEWABLE_SIZE, minCellSize);
             origViewingHeight = Math.max(DEFAULT_VIEWABLE_SIZE, minCellSize);
         }
-        setPreferredViewingSize(new Dimension(origViewingWidth + extraWidth(),
-                                          origViewingHeight + extraHeight()));
+        preferredVPSize = new Dimension(origViewingWidth + extraWidth(),
+                                        origViewingHeight + extraHeight());
+
+        if ( backgroundColor != null )
+            bgColor = backgroundColor;
+        else
+            bgColor = OCEAN_BLUE;
 
         gridLineWidth = calculateGridLineWidth();
+        numRows = numCols = 0;
+        originRow = originCol = 0;
+        setToolTipsEnabled(false);
+        addComponentListener(new ComponentAdapter()
+            {   public void componentResized(ComponentEvent e)
+                    { JViewport vp = getEnclosingViewport();
+                      if (vp == null)
+                      {
+                          recalculateCellSize();
+                      }
+                    }
+            });
+    }
+
+    /* (non-Javadoc)
+     * @see edu.kzoo.grid.gui.GridChangeListener#reactToNewGrid(edu.kzoo.grid.Grid)
+     */
+    public void reactToNewGrid(Grid newGrid)
+    {
+        setGrid(newGrid);
+    }
+
+    /** Sets the Grid being displayed.  Sets the cell size to
+     *  be the largest that fits the entire grid in the current 
+     *  viewing area (uses a default minimum if grid is too large).
+     *  @param grid the Grid to display
+     **/
+    public void setGrid(Grid grid)
+    {
+        JViewport vp = getEnclosingViewport();	// before changing, reset scroll/pan position
+        if (vp != null)
+            vp.setViewPosition(new Point(0, 0));
+
+        theGrid = grid;
+        setToolTipsEnabled(grid != null);
+
+        if ( grid == null )
+            return;
+
+        outerCellSize = 0;
+        originRow = originCol = 0;
+
+        if ( theGrid.numRows() == -1 )
+            numRows = 2000; // This determines the "virtual" size of the pan world
+        else
+            numRows = theGrid.numRows();
+        
+        if ( theGrid.numCols() == -1 )
+            numCols = 2000; // This determines the "virtual" size of the pan world
+        else
+            numCols = theGrid.numCols();
+
+        recalculateCellSize();
+    }
+
+    /** Gets our parent viewport, if we are in one.
+     **/
+    public JViewport getEnclosingViewport()
+    {
+        Component parent = getParent();
+        return (parent instanceof JViewport) ? (JViewport)parent : null;
     }
 
     /** Calculates the cell size to use given the current viewable region and the
@@ -296,9 +303,7 @@ public class ScrollableGridDisplay extends ScrollablePanel
     /** Gets the grid. **/
     public Grid grid()
     {
-        // This is type-safe because the only way that the model is set is
-        // through a constructor, and that requires that the model be a Grid.
-        return (Grid) model();
+        return theGrid;
     }
 
     /** Gets the minimum cell size. **/
@@ -346,7 +351,7 @@ public class ScrollableGridDisplay extends ScrollablePanel
      **/
     public void showGrid()
     {
-        showModel();
+        repaint();
     }
 
     /** Updates the display of just a single location on the grid.
@@ -473,12 +478,50 @@ public class ScrollableGridDisplay extends ScrollablePanel
     }
 
 
-  // Redefine the following Scrollable method to get nicer
+  // The following methods implement the Scrollable interface to get nicer
   // behavior in a JScrollPane.
 
+    /* (non-Javadoc)
+     * @see javax.swing.Scrollable#getScrollableUnitIncrement(java.awt.Rectangle, int, int)
+     */
     public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) 
     { 
         return outerCellSize;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.Scrollable#getScrollableBlockIncrement(java.awt.Rectangle, int, int)
+     */
+    public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) 
+    { 
+        if (orientation == SwingConstants.VERTICAL)
+            return (int)(visibleRect.height * .9);
+        else
+            return (int)(visibleRect.width * .9);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.Scrollable#getScrollableTracksViewportWidth()
+     */
+    public boolean getScrollableTracksViewportWidth() 
+    {  
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.Scrollable#getScrollableTracksViewportHeight()
+     */
+    public boolean getScrollableTracksViewportHeight() 
+    { 
+         return false;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.Scrollable#getPreferredScrollableViewportSize()
+     */
+    public Dimension getPreferredScrollableViewportSize() 
+    {
+        return preferredVPSize;
     }
 
 
@@ -530,7 +573,7 @@ public class ScrollableGridDisplay extends ScrollablePanel
 
     public boolean isPannableUnbounded() 
     { 
-        return (grid() != null && grid().numRows() == -1); 
+        return (theGrid != null && theGrid.numRows() == -1); 
     }
 
     public String getPannableTipText()
@@ -619,10 +662,10 @@ public class ScrollableGridDisplay extends ScrollablePanel
      **/
     public Location locationForPoint(Point p)
     {
-        if ( grid() == null )
+        if ( theGrid == null )
             return null;
         Location loc = new Location(yCoordToRow(p.y), xCoordToCol(p.x));
-        return (grid().isValid(loc)) ? loc : null;
+        return (theGrid.isValid(loc)) ? loc : null;
     }
 
     // protected helpers to convert between (x,y) and (row,col)

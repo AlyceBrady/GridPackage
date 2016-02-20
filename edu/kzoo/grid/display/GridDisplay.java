@@ -19,6 +19,8 @@
 
 package edu.kzoo.grid.display;
 
+import edu.kzoo.grid.Grid;
+
 /**
  *  Grid Display Package:<br>
  *
@@ -36,6 +38,11 @@ package edu.kzoo.grid.display;
  **/
 public interface GridDisplay
 {
+    /** Sets the Grid being displayed.
+     *  @param grid the Grid to display
+     **/
+    void setGrid(Grid grid);
+
     /** Shows the current state of the grid.
      **/
     void showGrid();

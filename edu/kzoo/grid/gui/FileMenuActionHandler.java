@@ -170,7 +170,7 @@ public class FileMenuActionHandler
      *  Subclasses that support grid editing should ensure that the
      *  application is not actively running and modifying the grid
      *  while the grid is being edited.  For example, if the parent
-     *  frame is a <code>ControlledGridAppFrame</code>, the subclass
+     *  frame is a <code>SteppedGridAppFrame</code>, the subclass
      *  should call the frame's <code>stop</code> method.
      **/
     public void editGrid()

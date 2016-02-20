@@ -89,8 +89,8 @@ public class GridEditor extends GridAppFrame
     public void constructWindowContents()
     {
         String title = parentFrame.getTitle() + ": Grid Editor";
-        ScrollableGridDisplay parentDisplay = parentFrame.getGridDisplay();
-        JViewport vp = parentFrame.getGridDisplay().getEnclosingViewport();
+        ScrollableGridDisplay parentDisplay = parentFrame.getDisplay();
+        JViewport vp = parentFrame.getDisplay().getEnclosingViewport();
         Dimension windowSize = (vp != null) ? vp.getSize() : getSize();
         constructWindowContents(title, parentDisplay.backgroundColor(),
             windowSize.width, windowSize.height, 
@@ -107,8 +107,6 @@ public class GridEditor extends GridAppFrame
     public void constructWindowContents(String title, Color bgColor,
                      int viewingWidth, int viewingHeight, int minCellSize)
     {
-//        setGrid(parentFrame.getGrid());
-
         super.constructWindowContents(title, bgColor, viewingWidth, viewingHeight, minCellSize);
 
         // change the location and default close operation of the new window
@@ -304,7 +302,7 @@ public class GridEditor extends GridAppFrame
             {
                 getGrid().remove(obj);
             }
-            getGridDisplay().repaint();
+            getDisplay().repaint();
         }
     }
 

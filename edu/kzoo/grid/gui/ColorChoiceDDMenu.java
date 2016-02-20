@@ -68,11 +68,11 @@ public class ColorChoiceDDMenu extends JComboBox
     // in a color choice drop-down menu.
     public static final ColorChoice
         RED = new ColorChoice("Red", Color.red),
-        ORANGE = new ColorChoice("Orange", new Color(255, 128, 0)),
+        ORANGE = new ColorChoice("Orange", new Color(255, 102, 0)),
         YELLOW = new ColorChoice("Yellow", Color.yellow),
-        GREEN = new ColorChoice("Green", Color.green),
-        BLUE = new ColorChoice("Blue", new Color(0, 128, 255)),
-        PURPLE = new ColorChoice("Purple", new Color(128, 0, 128)),
+        GREEN = new ColorChoice("Green", new Color(0, 200, 0)),
+        BLUE = new ColorChoice("Blue", new Color(0, 0, 255)),
+        PURPLE = new ColorChoice("Purple", new Color(155, 0, 155)),
         WHITE = new ColorChoice("White", Color.white),
         GRAY = new ColorChoice("Gray", Color.gray),
         BLACK = new ColorChoice("Black", Color.black),

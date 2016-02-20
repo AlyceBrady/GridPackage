@@ -1,4 +1,4 @@
-// Class: KHelpMenu
+// Class: BasicHelpMenu
 //
 // Author: Alyce Brady
 //
@@ -18,7 +18,7 @@
 //   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //   GNU General Public License for more details.
 
-package edu.kzoo.kgui;
+package edu.kzoo.grid.gui.nuggets;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -40,9 +40,9 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 /**
- *  K College GUI Package:<br>
+ *  Grid GUI Nuggets Package (Handy Grid GUI Components):<br>
  *
- *  A <code>KHelpMenu</code> object represents a Help menu with
+ *  A <code>BasicHelpMenu</code> object represents a Help menu with
  *  two standard entries: "About Application_Name..." and "Help...",
  *  where "Application_Name" is the name of the application provided
  *  in a parameter to the constructor.  Selecting the "About" menu
@@ -54,7 +54,7 @@ import javax.swing.event.HyperlinkListener;
  *  @author Alyce Brady (based on code by Julie Zelenski)
  *  @version 31 March 2004
  **/
-public class KHelpMenu extends JMenu
+public class BasicHelpMenu extends JMenu
 {
  // instance variables
     private JFrame parentFrame = null;
@@ -62,7 +62,7 @@ public class KHelpMenu extends JMenu
     private String aboutMessage;
     private URL helpDocument;
 
-  // static method useful in constructing KHelpMenu objects
+  // static method useful in constructing BasicHelpMenu objects
 
     protected static String makeAboutMessage(String authors,
                                              String acknowledgements,
@@ -81,17 +81,62 @@ public class KHelpMenu extends JMenu
   // constructors
 
     /** Constructs an empty Help menu. **/
-    public KHelpMenu()
+    public BasicHelpMenu()
     {
         super("Help");
     }
 
-    /** Constructs an empty menu with the specifed name.
-     *    @param name the label for this menu in the menu bar 
+    /** Constructs a Help menu with one "About This_Application..." entry, 
+     *  where This_Application is replaced with <code>applName</code>.
+     *  Selecting the About option brings up a dialog box that displays
+     *  the application name and the specified additional information.
+     *     @param applName the name of this application, to be used in the
+     *                  "About This_Application..." menu item;
+     *                  <code>null</code> if there should not be an
+     *                  "About This_Application..." menu item
+     *     @param aboutMessage additional information to be displayed
+     *                  in the "About This_Application..." dialog box;
+     *                  <code>null</code> if there should not be an
+     *                  "About This_Application..." menu item
      **/
-    public KHelpMenu(String name)
+    public BasicHelpMenu(String applName, String aboutMessage)
     {
-        super(name);
+        super("Help");
+        addAboutMenuItem(applName, aboutMessage);
+    }
+
+    /** Constructs a Help menu with one "About This_Application..." entry, 
+     *  where This_Application is replaced with <code>applName</code>.
+     *  Selecting the About option brings up a dialog box that
+     *  displays the application name, and the specified author(s),
+     *  acknowledgements, and version information, each preceded
+     *  with an appropriate label.  If any of those parameters is
+     *  <code>null</code>, the associated label will not be included.
+     *     @param applName the name of this application, to be used in the
+     *                  "About This_Application..." menu item;
+     *                  <code>null</code> if there should not be an
+     *                  "About This_Application..." menu item
+     *     @param authors the name(s) of the author(s) to be displayed in
+     *                  the "About This_Application..." dialog box;
+     *                  <code>null</code> if the "About" information should
+     *                  not include author information
+     *     @param acknowledgements acknowledgement information to be included
+     *                  in the "About This_Application..." dialog box;
+     *                  <code>null</code> if the "About" information should
+     *                  not include acknowledgements
+     *     @param versionInfo version information (for example, date or
+     *                  version number) to be included in the
+     *                  "About This_Application..." dialog box;
+     *                  <code>null</code> if the "About" information should
+     *                  not include version information
+     **/
+    public BasicHelpMenu(String applName, String authors, 
+                         String acknowledgements, String versionInfo)
+    {
+        super("Help");
+        addAboutMenuItem(applName, makeAboutMessage(authors, 
+                                                    acknowledgements,
+                                                    versionInfo));
     }
 
     /** Constructs a Help menu with two standard entries: 
@@ -119,7 +164,7 @@ public class KHelpMenu extends JMenu
      *                  <code>null</code> if there should not be a menu
      *                  item for a help document
      **/
-    public KHelpMenu(String applName, String aboutMessage,
+    public BasicHelpMenu(String applName, String aboutMessage,
                          String helpDocumentURL)
     {
         super("Help");
@@ -165,7 +210,7 @@ public class KHelpMenu extends JMenu
      *                  <code>null</code> if there should not be a menu
      *                  item for a help document
      **/
-    public KHelpMenu(String applName, String authors, 
+    public BasicHelpMenu(String applName, String authors, 
                          String acknowledgements, String versionInfo,
                          String helpDocumentURL)
     {

@@ -1,4 +1,4 @@
-// Class GridAppController
+// Class SteppedGridAppController
 //
 // Author: Alyce Brady
 //
@@ -21,13 +21,13 @@ import java.lang.UnsupportedOperationException;
 /**
  *  Grid GUI Support Package:<br>
  *
- *  A <code>GridAppController</code> controls the running of a
+ *  A <code>SteppedGridAppController</code> controls the running of a
  *  grid application.
  *
  *  @author Alyce Brady
  *  @version 29 February 2004
  **/
-public abstract class GridAppController  
+public abstract class SteppedGridAppController  
 {
     private Grid grid = null;
 
@@ -48,7 +48,17 @@ public abstract class GridAppController
         this.grid = grid;
     }
 
-    /** Advances the application one step. 
+    /** Initializes or re-initializes the state of the grid application.
+     **/
+    public void init()
+    { 
+        throw new UnsupportedOperationException();   // default behavior
+    }
+
+    /** Advances the application one step.
+     *  (Note: there is no precondition on this method that getGrid()
+     *  must return a non-null grid, so subclass implementations should
+     *  handle the possibility of a null grid gracefully.)
      **/
     public abstract void step();
 
@@ -63,14 +73,6 @@ public abstract class GridAppController
     public boolean hasReachedStoppingState()
     { 
         return false;   // default behavior
-    }
-
-    /** Re-initializes the state of the grid application for
-     *  a restart.
-     **/
-    public void restart()
-    { 
-        throw new UnsupportedOperationException();   // default behavior
     }
 
 }

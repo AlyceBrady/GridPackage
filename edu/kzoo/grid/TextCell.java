@@ -36,6 +36,26 @@ public class TextCell extends GridObject
     /** Constructs a text cell with the specified text and a default color
      *  of black.
      *  @param text        the text to go in this cell
+     **/
+    public TextCell(String text)
+    {
+        this(text, Color.black);
+    }
+
+    /** Constructs a text cell with the specified text and color.
+     *  @param text        the text to go in this cell
+     *  @param textColor   the color of the text
+     **/
+    public TextCell(String text, Color textColor)
+    {
+        super();
+        theText = text;
+        theColor = textColor;
+    }
+
+    /** Constructs a text cell at a given location of a grid with the
+     *  specified text and a default color of black.
+     *  @param text        the text to go in this cell
      *  @param grid        the grid containing this text cell
      *  @param loc         the location of the text cell in <code>grid</code>
      **/
@@ -44,7 +64,8 @@ public class TextCell extends GridObject
         this(text, Color.black, grid, loc);
     }
 
-    /** Constructs a text cell with the specified text of the specified color.
+    /** Constructs a text cell at a given location of a grid with the
+     *  specified text and color.
      *  @param text        the text to go in this cell
      *  @param textColor   the color of the text
      *  @param grid        the grid containing this text cell
