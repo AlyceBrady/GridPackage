@@ -59,19 +59,19 @@ public class NamedColor extends Color
 
     /** NamedColor version of <code>java.awt.Color</code> constant **/
     public static final NamedColor
-        WHITE = new NamedColor(Color.white, "WHITE"),
-        LIGHT_GRAY = new NamedColor(Color.lightGray, "LIGHT_GRAY"),
-        GRAY = new NamedColor(Color.gray, "GRAY"),
-        DARK_GRAY = new NamedColor(Color.darkGray, "DARK_GRAY"),
-        BLACK = new NamedColor(Color.black, "BLACK"),
-        RED = new NamedColor(Color.red, "RED"),
-        PINK = new NamedColor(Color.pink, "PINK"),
-        ORANGE = new NamedColor(Color.orange, "ORANGE"),
-        YELLOW = new NamedColor(Color.yellow, "YELLOW"),
-        GREEN = new NamedColor(Color.green, "GREEN"),
-        MAGENTA = new NamedColor(Color.magenta, "MAGENTA"),
-        CYAN = new NamedColor(Color.cyan, "CYAN"),
-        BLUE = new NamedColor(Color.blue, "BLUE");
+        WHITE = new NamedColor(Color.WHITE, "WHITE"),
+        LIGHT_GRAY = new NamedColor(Color.LIGHT_GRAY, "LIGHT_GRAY"),
+        GRAY = new NamedColor(Color.GRAY, "GRAY"),
+        DARK_GRAY = new NamedColor(Color.DARK_GRAY, "DARK_GRAY"),
+        BLACK = new NamedColor(Color.BLACK, "BLACK"),
+        RED = new NamedColor(Color.RED, "RED"),
+        PINK = new NamedColor(Color.PINK, "PINK"),
+        ORANGE = new NamedColor(Color.ORANGE, "ORANGE"),
+        YELLOW = new NamedColor(Color.YELLOW, "YELLOW"),
+        GREEN = new NamedColor(Color.GREEN, "GREEN"),
+        MAGENTA = new NamedColor(Color.MAGENTA, "MAGENTA"),
+        CYAN = new NamedColor(Color.CYAN, "CYAN"),
+        BLUE = new NamedColor(Color.BLUE, "BLUE");
 
     public static final NamedColor
         CINNAMON = new NamedColor(200, 100, 100, "CINNAMON");
