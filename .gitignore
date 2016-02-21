@@ -24,7 +24,7 @@
 *.dmg
 *.gz
 *.iso
-*.jar
+# *.jar  Grid Package repository should include grid.jar
 *.rar
 *.tar
 *.zip
