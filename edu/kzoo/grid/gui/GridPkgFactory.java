@@ -395,7 +395,7 @@ public class GridPkgFactory
                               " choice \"" + classNames[i] + "\" because ";
             try 
             {
-                Class<?> cls = Class.forName(classNames[i]);
+                Class cls = Class.forName(classNames[i]);
                 // If we were to check for validity, it would be based
                 // on what constructors?  (And how many?)
                     gridObjectClasses.add(cls);
