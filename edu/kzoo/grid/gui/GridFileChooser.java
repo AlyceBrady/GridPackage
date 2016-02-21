@@ -103,7 +103,7 @@ public class GridFileChooser extends JFileChooser
         // Get the list of possible bounded grids.  If factory doesn't
         // have any, use BoundedGrid.  If factory has just one, use it.  Otherwise,
         // build a combo box for user to choose a grid representations.
-        Set set = GridPkgFactory.boundedGridClasses();
+        Set<Class> set = GridPkgFactory.boundedGridClasses();
         if (set.size() == 0)
             defaultBounded = BoundedGrid.class;
         else if (set.size() == 1)

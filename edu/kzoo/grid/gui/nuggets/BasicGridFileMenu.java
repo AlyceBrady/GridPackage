@@ -25,7 +25,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
@@ -54,7 +53,8 @@ public class BasicGridFileMenu extends MinimalFileMenu
             implements GridChangeListener
 {
   // instance variables
-    private Collection menuItemsThatNeedAGrid = new ArrayList();
+    private Collection<JMenuItem> menuItemsThatNeedAGrid =
+                                            new ArrayList<JMenuItem>();
     private GridAppFrame parentFrame = null;
     private FileMenuActionHandler fileMenuActionHandler = null;
     private GridDataFileHandler fileHandler = null;
@@ -209,9 +209,8 @@ public class BasicGridFileMenu extends MinimalFileMenu
      **/
     public void reactToNewGrid(Grid newGrid)
     {
-        Iterator iter = menuItemsThatNeedAGrid.iterator();
-        while (iter.hasNext())
-            ((JMenuItem)iter.next()).setEnabled(newGrid != null);
+        for ( JMenuItem menuItem : menuItemsThatNeedAGrid )
+            menuItem.setEnabled(newGrid != null);
     }
 
 }

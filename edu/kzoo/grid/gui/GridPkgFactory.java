@@ -187,7 +187,7 @@ public class GridPkgFactory
      *                              cannot be constructed with the specified
      *                              parameters
      **/
-    public static Object constructGridObject(Class<? extends GridObject> cls,
+    public static Object constructGridObject(Class cls,
                                              Grid grid, Location loc)
     {
         Object[] parameters = {grid, loc};
@@ -215,7 +215,7 @@ public class GridPkgFactory
      *                              be constructed with the specified
      *                              parameters
      **/
-    public static Object constructGridObject(Class<? extends GridObject> cls,
+    public static Object constructGridObject(Class cls,
                                              Grid grid, Location loc,
                                              Direction dir)
     {
@@ -236,7 +236,7 @@ public class GridPkgFactory
      *                              be constructed with the specified
      *                              parameters
      **/
-    public static Object constructGridObject(Class<? extends GridObject> cls,
+    public static Object constructGridObject(Class cls,
                                              Grid grid, Location loc,
                                              Direction dir, Color color)
     {
@@ -252,7 +252,7 @@ public class GridPkgFactory
      *  @throws  RuntimeException   if an object of the specified class cannot
      *                              be constructed with no parameters
      **/
-    public static Grid constructGrid(Class<? extends Grid> cls)
+    public static Grid constructGrid(Class cls)
     {
         return (Grid)constructObject(cls, UNBOUNDED_ARGS, null);
     }
@@ -266,7 +266,7 @@ public class GridPkgFactory
      *                              be constructed with the specified
      *                              number of rows and columns
      **/
-    public static Grid constructGrid(Class<? extends Grid> cls, int numRows,
+    public static Grid constructGrid(Class cls, int numRows,
                                      int numCols)
     {
         Object[] parameters = {new Integer(numRows), new Integer(numCols)};

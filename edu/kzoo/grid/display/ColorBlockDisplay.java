@@ -49,20 +49,25 @@ public class ColorBlockDisplay extends ScaledDisplay
         // Get the color of the object.
         Class objClass = obj.getClass();
         Color objColor;
+        String errPrefix = "Cannot get color for object of " +
+                                objClass + " class";
         try
         {
+            // Color takes no parameters, so pass empty arrays for params.
             Method colorMethod = objClass.getMethod("color", new Class[0]);
             objColor = (Color)colorMethod.invoke(obj, new Object[0]);
         }
         catch (NoSuchMethodException e)
-        { throw new IllegalArgumentException("Cannot get color for object of "
-            + objClass + " class; cannot invoke color method."); }
+        { throw new IllegalArgumentException(errPrefix +
+                " ; cannot invoke color method."); }
         catch (InvocationTargetException e)
-        { throw new IllegalArgumentException("Cannot get color for object of "
-            + objClass + " class; exception thrown in color method."); }
+        { throw new IllegalArgumentException(errPrefix +
+                " ; exception thrown in color method."); }
         catch (IllegalAccessException e)
-        { throw new IllegalArgumentException("Cannot get color for object of "
-            + objClass + " class; cannot access color method."); }
+        { throw new IllegalArgumentException(errPrefix +
+                " ; cannot access color method."); }
+        catch (Exception e)
+        { throw new IllegalArgumentException(errPrefix + " ."); }
 
         // Draw a 1 x 1 rectangle centered around (0, 0). Temporarily
         // scale up first.

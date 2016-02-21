@@ -287,7 +287,7 @@ public class NamedColor extends Color
     /** Gets the names of all the colors with name => color associations.
      *    @return all the known color names
      **/
-    public static Set getAllColorNames()
+    public static Set<String> getAllColorNames()
     {
         return colors.getAllColorNames();
     }
@@ -295,7 +295,7 @@ public class NamedColor extends Color
     /** Gets all the colors with name => color associations.
      *    @return all the known colors
      **/
-    public static Set getAllNamedColors()
+    public static Set<NamedColor> getAllNamedColors()
     {
         return colors.getAllNamedColors();
     }
@@ -471,8 +471,10 @@ public class NamedColor extends Color
     protected static class ColorMap
     {
         // Two hashmaps to store the mappings between names and colors.
-        private HashMap nameToColorMap = new HashMap(30);
-        private HashMap colorToNameMap = new HashMap(30);
+        private HashMap<String, NamedColor> nameToColorMap =
+                                        new HashMap<String, NamedColor>(30);
+        private HashMap<NamedColor, String> colorToNameMap =
+                                        new HashMap<NamedColor, String>(30);
 
         /** Adds a color to the map.
          *  (Precondition: neither <code>name</code> nor <code>c</code>
@@ -574,7 +576,7 @@ public class NamedColor extends Color
          *    @return all the color names in the map (<code>String</code>
          *            objects)
          */
-        public Set getAllColorNames()
+        public Set<String> getAllColorNames()
         {
             return nameToColorMap.keySet();
         }
@@ -584,7 +586,7 @@ public class NamedColor extends Color
          *    @return a <code>Set</code> of all the <code>NamedColor</code>
          *            objects in the map
          */
-        public Set getAllNamedColors()
+        public Set<NamedColor> getAllNamedColors()
         {
             return colorToNameMap.keySet();
         }
@@ -599,10 +601,11 @@ public class NamedColor extends Color
             
             // Create a temporary arrayList that can be used to access a
             // random index .
-            ArrayList tempArrayList = new ArrayList(nameToColorMap.values());
+            ArrayList<NamedColor> tempArrayList =
+                        new ArrayList<NamedColor>(nameToColorMap.values());
             
             // Return the random indexed NamedColor.
-            return (NamedColor) tempArrayList.get(i);           
+            return tempArrayList.get(i);           
         }   
 
     }

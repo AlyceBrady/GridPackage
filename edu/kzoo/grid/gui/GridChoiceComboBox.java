@@ -24,7 +24,6 @@ import edu.kzoo.grid.BoundedGrid;
 import edu.kzoo.grid.ArrayListGrid;
 
 import javax.swing.JComboBox;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -49,14 +48,13 @@ public class GridChoiceComboBox extends JComboBox
      **/
     public void addBoundedGrids()
     {
-        Set boundedGridClasses = GridPkgFactory.boundedGridClasses();
-        if ( boundedGridClasses.isEmpty() )
+        Set<Class> gridClasses = GridPkgFactory.boundedGridClasses();
+        if ( gridClasses.isEmpty() )
             addItem(new GridChoice(BoundedGrid.class, true));
         else
         {
-            Iterator iter = boundedGridClasses.iterator();
-            while (iter.hasNext())
-                addItem(new GridChoice((Class)iter.next(), true));
+            for ( Class gridClass : gridClasses )
+                addItem(new GridChoice(gridClass, true));
         }
     }
 
@@ -66,14 +64,13 @@ public class GridChoiceComboBox extends JComboBox
      **/
     public void addUnboundedGrids()
     {
-        Set unboundedGridClasses = GridPkgFactory.unboundedGridClasses();
-        if ( unboundedGridClasses.isEmpty() )
+        Set<Class> gridClasses = GridPkgFactory.unboundedGridClasses();
+        if ( gridClasses.isEmpty() )
             addItem(new GridChoice(ArrayListGrid.Unbounded.class, false));
         else
         {
-            Iterator iter = unboundedGridClasses.iterator();
-            while (iter.hasNext())
-                addItem(new GridChoice((Class)iter.next(), false));
+            for ( Class gridClass : gridClasses )
+                addItem(new GridChoice(gridClass, false));
         }
     }
 

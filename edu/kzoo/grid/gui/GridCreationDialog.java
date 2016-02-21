@@ -231,7 +231,7 @@ public class GridCreationDialog
         Component parent = dialog.getParent();
         dialog.setLocation(parent.getX() + parent.getWidth()/2 - dialog.getSize().width/2,
                            parent.getY() + parent.getHeight()/2 - dialog.getSize().height/2);
-        dialog.show();   // Modal dialog will block until user clicks ok/cancel
+        dialog.setVisible(true);   // Modal dialog will block until user clicks ok/cancel
 
         if ( ! userClickedOK ) 	// if user cancelled or closed dialog
             return null;	// return null

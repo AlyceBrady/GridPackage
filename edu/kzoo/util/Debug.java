@@ -73,7 +73,8 @@ import java.util.Stack;
 public class Debug
 {
     private static boolean debugOn = false;       // debugging is on or off?
-    private static Stack oldStates = new Stack(); // to restore previous states
+    private static Stack<Boolean> oldStates =
+                            new Stack<Boolean>(); // to restore previous states
 
 
     /** Checks whether debugging is on.  The <code>Debug.print</code>
