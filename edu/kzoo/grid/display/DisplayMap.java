@@ -70,7 +70,8 @@ public class DisplayMap
         try 
         {
             // Store the actual class rather than the classname in the map.
-            Class gridObjClass = Class.forName(gridObjClassname);
+            Class gridObjClass = Class.forName(gridObjClassname, true, 
+                    Thread.currentThread().getContextClassLoader());
             map.put(gridObjClass, displayObj);
         } 
         catch (ClassNotFoundException e) 

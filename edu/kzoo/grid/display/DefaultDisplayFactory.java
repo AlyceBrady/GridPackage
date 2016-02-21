@@ -192,7 +192,8 @@ public class DefaultDisplayFactory
                InstantiationException
     {
         // Instantiate the appropriate display class (if it exists).
-        Class dispClass = Class.forName(fullDispClassName);
+        Class dispClass = Class.forName(fullDispClassName, true, 
+                Thread.currentThread().getContextClassLoader());
         ScaledDisplay disp = (ScaledDisplay) dispClass.newInstance();
 
         // Assuming everything has worked so far, add the default
