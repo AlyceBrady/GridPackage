@@ -36,7 +36,7 @@ import java.util.Set;
  *  @author Alyce Brady (based on code by Julie Zelenski)
  *  @version 15 December 2003
  **/
-public class GridChoiceComboBox extends JComboBox
+public class GridChoiceComboBox extends JComboBox<GridChoiceComboBox.GridChoice>
 {    
     private static final long serialVersionUID = 3532436510757444069L;
 

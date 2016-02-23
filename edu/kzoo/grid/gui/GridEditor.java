@@ -51,7 +51,6 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
-import java.util.Iterator;
 
 /**
  *  Grid GUI Support Package:<br>
@@ -66,7 +65,7 @@ public class GridEditor extends GridAppFrame
 {
     protected GridAppFrame parentFrame = null;
     protected JButton doneButton;
-    protected JComboBox objComboBox;
+    protected JComboBox<GridObjectChoice> objComboBox;
 
 
   // constructors and initialization methods
@@ -185,7 +184,7 @@ public class GridEditor extends GridAppFrame
      **/
     protected Component makeTypeChoiceComponent()
     {
-        objComboBox = new JComboBox();
+        objComboBox = new JComboBox<GridObjectChoice>();
         addChoicesFromFactory(objComboBox);
         objComboBox.setRenderer(new TextAndIconRenderer(objComboBox));
         objComboBox.setAlignmentX(LEFT_ALIGNMENT);
@@ -198,14 +197,10 @@ public class GridEditor extends GridAppFrame
     /** Builds up the list of grid object type choices for the editing
      *  palette.
      **/
-    protected void addChoicesFromFactory(JComboBox cb)
+    protected void addChoicesFromFactory(JComboBox<GridObjectChoice> cb)
     {
-        Iterator iter = GridPkgFactory.gridObjectClasses().iterator();
-        while (iter.hasNext())
-        {
-            GridObjectChoice choice = new GridObjectChoice((Class)iter.next());
-            cb.addItem(choice);
-        }
+        for ( Class gridObjClass : GridPkgFactory.gridObjectClasses() )
+            cb.addItem(new GridObjectChoice(gridObjClass));
     }
 
     /** Nested class used to hold the per-item information for the 

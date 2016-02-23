@@ -61,7 +61,7 @@ import java.util.Random;
  *  @author Alyce Brady (based on code by Julie Zelenski)
  *  @version 15 December 2003
  **/
-public class ColorChoiceDDMenu extends JComboBox
+public class ColorChoiceDDMenu extends JComboBox<ColorChoiceDDMenu.ColorChoice>
 {
     /** Unique constant object representing a random color (to compare == to) */
     public static final Color RANDOM_COLOR = new Color(0, 0, 0);
