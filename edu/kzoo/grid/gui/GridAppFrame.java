@@ -66,7 +66,7 @@ import javax.swing.event.ChangeListener;
  *  a particular component has not yet been implemented).
  *
  *  @author Alyce Brady (based on code by Julie Zelenski)
- *  @version 1 September 2004
+ *  @version 22 Feb 2016 (prev version was 1 September 2004)
  **/
 public class GridAppFrame extends JFrame implements GridDisplay
 {
@@ -311,8 +311,9 @@ public class GridAppFrame extends JFrame implements GridDisplay
      *     @param enableDisableIndicator indicates when the components should
      *                                   be enabled or disabled
      **/
-    public void includeControlComponents(ArrayList<JComponent> componentList,
-                                         int enableDisableIndicator)
+    public void
+    includeControlComponents(ArrayList<? extends JComponent> componentList,
+                             int enableDisableIndicator)
     {
         for ( JComponent component : componentList )
         {
