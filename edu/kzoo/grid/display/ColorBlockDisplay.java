@@ -47,7 +47,7 @@ public class ColorBlockDisplay extends ScaledDisplay
     public void draw(GridObject obj, Component comp, Graphics2D g2)
     {
         // Get the color of the object.
-        Class objClass = obj.getClass();
+        Class<? extends GridObject> objClass = obj.getClass();
         Color objColor;
         String errPrefix = "Cannot get color for object of " +
                                 objClass + " class";

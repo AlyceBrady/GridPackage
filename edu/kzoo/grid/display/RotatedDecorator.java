@@ -83,7 +83,7 @@ public class RotatedDecorator implements DisplayDecorator {
 		// (direction).  (Assumption is that without rotating the
 		// drawing surface the object will be drawn facing North.)
 		// Object must have a direction method.
-		Class objClass = obj.getClass();
+                Class<? extends GridObject> objClass = obj.getClass();
 		try
 		{
 			Method dirMethod = objClass.getMethod("direction", new Class[0]);
