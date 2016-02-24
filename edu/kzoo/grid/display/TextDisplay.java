@@ -124,7 +124,7 @@ public class TextDisplay extends ScaledDisplay
     /** Invokes the named method on the specified object. **/
     protected Object invokeAccessorMethod(GridObject obj, String methodName)
     {
-        Class objClass = obj.getClass();
+        Class<? extends GridObject> objClass = obj.getClass();
         Object returnValue;
         try
         {

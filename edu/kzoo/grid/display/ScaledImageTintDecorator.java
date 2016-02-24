@@ -66,7 +66,7 @@ public class ScaledImageTintDecorator implements DisplayDecorator
                      Component comp, Graphics2D g2)
     {
         // Use the object's color as an image filter.
-        Class objClass = obj.getClass();
+        Class<? extends GridObject> objClass = obj.getClass();
         try
         {
             Method colorMethod = objClass.getMethod("color", new Class[0]);

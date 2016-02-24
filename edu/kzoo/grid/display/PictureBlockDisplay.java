@@ -54,7 +54,7 @@ public class PictureBlockDisplay extends ScaledImageDisplay
      **/
     public void draw(GridObject obj, Component comp, Graphics2D g2)
     {
-        Class objClass = obj.getClass();
+        Class<? extends GridObject> objClass = obj.getClass();
 
         // Get the picture to display.
         String errorBeginning = "Cannot get picture for object of " +
