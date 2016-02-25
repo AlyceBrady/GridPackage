@@ -93,10 +93,12 @@ public class TextDisplay extends ScaledDisplay
 
        // Set color of question mark and its font.
         g2.setPaint(objColor);
+        Font oldFont = g2.getFont();
         g2.setFont(new Font("SansSerif", Font.BOLD, 80));
 
         // Paint it centered in the rectangle. 
         paintCenteredText(g2, objText, (float)0, (float)0);
+        g2.setFont(oldFont);
     }
 
     /** Gets the text string to draw.
