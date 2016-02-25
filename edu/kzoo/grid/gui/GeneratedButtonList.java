@@ -375,12 +375,12 @@ public class GeneratedButtonList extends ArrayList<ThreadedControlButton>
             try
             {   meth.invoke(targetObj, methodArguments);  }
             catch (InvocationTargetException e)
-            {   throw new IllegalArgumentException("Can't invoke " +
-                    meth.getName() + ": " + e);
+            {   throw new RuntimeException("Exception thrown in " +
+                    meth.getName() + ": " + e.getCause().toString());
             }
             catch (IllegalAccessException e)
-            {   throw new IllegalArgumentException("Can't invoke " +
-                    meth.getName() + ": " + e);
+            {   throw new RuntimeException("Can't invoke " +
+                    meth.getName() + ": " + e.getCause().toString());
             }
         }
     } 
