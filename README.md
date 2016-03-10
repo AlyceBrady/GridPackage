@@ -3,13 +3,11 @@ Framework for creating Java learning exercises based on 2-D grids.
 
 There are many introductory programming assignments that involve objects in a 
 two-dimensional data structure.  They include games, like tic-tac-toe,
-checkers, and chess; maze programs; simulations, like Conway's Game of
-Life
-[1](https://en.wikipedia.org/wiki/Conway's_Game_of_Life "Wikipedia article")
-[2](http://web.archive.org/web/20090603015231/http://ddi.cs.uni-potsdam.de/HyFISCH/Produzieren/lis_projekt/proj_gamelife/ConwayScientificAmerican.htm
-"Martin Gardner's Scientific American article")
-or the AP® Marine Biology Simulation (MBS) case
-study[3](http://www.cs.kzoo.edu/AP/MBS/ "MBS home page");
+checkers, and chess; maze programs; simulations, like 
+[Conway's Game of
+Life](https://en.wikipedia.org/wiki/Conway's_Game_of_Life "Wikipedia article")
+or the [AP® Marine Biology Simulation (MBS) case
+study](http://www.cs.kzoo.edu/AP/MBS/ "MBS home page");
 and simpler programs that use a grid as graph paper for
 drawing histograms or bit-mapped drawings.  These projects lend themselves to
 graphical representations, but the overhead involved in implementing graphical
