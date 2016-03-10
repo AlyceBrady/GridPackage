@@ -3,9 +3,14 @@ Framework for creating Java learning exercises based on 2-D grids.
 
 There are many introductory programming assignments that involve objects in a 
 two-dimensional data structure.  They include games, like tic-tac-toe,
-checkers, and chess; maze programs; simulations, like the Game of
-Life[citation?] or the AP® Marine Biology Simulation (MBS) case
-study[citation]; and simpler programs that use a grid as graph paper for
+checkers, and chess; maze programs; simulations, like Conway's Game of
+Life
+[1](https://en.wikipedia.org/wiki/Conway's_Game_of_Life "Wikipedia article")
+[2](http://web.archive.org/web/20090603015231/http://ddi.cs.uni-potsdam.de/HyFISCH/Produzieren/lis_projekt/proj_gamelife/ConwayScientificAmerican.htm
+"Martin Gardner's Scientific American article")
+or the AP® Marine Biology Simulation (MBS) case
+study[3](http://www.cs.kzoo.edu/AP/MBS/ "MBS home page");
+and simpler programs that use a grid as graph paper for
 drawing histograms or bit-mapped drawings.  These projects lend themselves to
 graphical representations, but the overhead involved in implementing graphical
 user interfaces for such assignments, especially interfaces that support user
@@ -18,7 +23,7 @@ The Grid Package was inspired by, and evolved from, the AP® Marine Biology
 Simulation (MBS) case study.  The MBS case study introduced a two-dimensional 
 data structure called an Environment, which represents the marine environment
 (lake, bay, or pond) for fish in a simulation.  The Grid Package introduces a
-similarGrid data structure that models a two-dimensional grid made up of rows
+similar Grid data structure that models a two-dimensional grid made up of rows
 and columns and a GridObject class that represents objects in a grid.  Each
 cell in a grid may be empty or may contain one GridObject object. A GridObject
 object keeps track of its own row/column location in the grid and provides
@@ -36,14 +41,16 @@ simple grid with two objects (subclasses of GridObject) in it.
 The Grid Package supports five basic types of graphical user interfaces for 
 applications that use grid objects.  An application might have:
 
-- a simple GUI containing a display of the contents of a grid (Figure 2a),
+- a simple GUI containing a display of the contents of a grid (Figure 2a in the DraftOverview document),
 - a simple GUI containing an animated display of the changing contents of a 
-grid, with a slider bar to control the speed of the animation (Figure 2b),
+grid, with a slider bar to control the speed of the animation (Figure 2b in the DraftOverview),
 - an interactive GUI that allows users to control the behavior of the 
-application by clicking on control buttons (Figure 2c),
+application by clicking on control buttons (Figure 2c in the
+DraftOverview),
 - a specialized interactive GUI that operates on "stepped" applications 
 (applications such as simulations that run in discrete steps), with control 
-buttons such as Start/Restart, Step, or Run (Figure 2d), or
+buttons such as Start/Restart, Step, or Run (Figure 2d in the
+DraftOverview), or
 - an interactive GUI that allows users to control the behavior of the 
 application by clicking on grid cells (the appearance of this kind of GUI is
 similar to those above).
