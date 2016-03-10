@@ -38,15 +38,15 @@ import javax.swing.ListCellRenderer;
  *  @version 13 December 2003
  **/
 public class TextAndIconRenderer extends JLabel
-    implements ListCellRenderer 
+    implements ListCellRenderer<Object>
 {
-    private JComboBox cb;
+    private JComboBox<? extends JLabel> cb;
 
     /** Constructs a renderer that will operate on the specified
      *  combo box.
      *      @param combo  the combo box this renderer is associated with
      **/
-    public TextAndIconRenderer(JComboBox combo) 
+    public TextAndIconRenderer(JComboBox<? extends JLabel> combo) 
     {
         setOpaque(true);
         setHorizontalAlignment(LEFT);
