@@ -46,15 +46,14 @@ public class ScaledImageTintDecorator implements DisplayDecorator
 {
     private HashMap<Color,Image> tintedVersions = new HashMap<Color,Image>();
 
-	/**
-	 * Decorate the ScaledImageDisplay so that it appears tinted.
-	 */
-	public void decorate(GridObjectDisplay disp, GridObject obj,
+    /**
+     * Decorate the ScaledImageDisplay so that it appears tinted.
+     */
+    public void decorate(GridObjectDisplay disp, GridObject obj,
                          Component comp, Graphics2D g2)
     { 
-		tint((ScaledImageDisplay) disp, obj, comp, g2);
-
-	}
+        tint((ScaledImageDisplay) disp, obj, comp, g2);
+    }
     
     /** Adjusts the graphics system to use an object's color to tint an image.
      *  (Precondition: <code>obj</code> has a <code>color</code> method.)
