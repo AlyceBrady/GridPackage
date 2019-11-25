@@ -137,7 +137,7 @@ public class GridPkgFactory
     }
 
     /** Creates an object of the given class.
-     *  @param   cls        	 class of new object
+     *  @param   cls             class of new object
      *  @param   parameterTypes  parameter types expected by constructor
      *                           for class
      *  @param   parameters      actual parameters to pass to constructor
@@ -161,7 +161,7 @@ public class GridPkgFactory
             }
             else
             {
-               	// use the constructor that matches the parameterTypes
+                // use the constructor that matches the parameterTypes
                 Constructor<?> objCons = cls.getConstructor(parameterTypes);
                 newObject = objCons.newInstance(parameters);
             }
@@ -382,6 +382,39 @@ public class GridPkgFactory
     }
 
    
+    /** Adds a grid object class to the set maintained by the factory.
+     *  If the named class cannot be found or the class is not a proper
+     *  GridObject object, an error message is printed and the class is not
+     *  added to the set.
+     *  @param  classNames an array of grid object class names
+     **/
+    public static void addGridObjClassName(String className)
+    {
+        String errStart = "Discarding " + ClassCategory.A_GRID_OBJECT +
+                          " choice \"" + className + "\" because ";
+        try 
+        {
+            Class cls = Class.forName(className, true, 
+                    Thread.currentThread().getContextClassLoader());
+            // If we were to check for validity, it would be based
+            // on what constructors?  (And how many?)
+            gridObjectClasses.add(cls);
+        }
+        catch (ClassNotFoundException e)
+        {
+            System.err.println(errStart + "no class found with that name.");
+        } 
+        catch (ClassCastException e)
+        {
+            System.err.println(errStart + e.getMessage());
+        }
+//        catch (NoSuchMethodException e) 
+//        {
+//            System.err.println(errStart + "it doesn't have the proper constructor.");
+//        } 
+    }
+
+   
     /** Adds grid object classes to the set maintained by the factory.
      *  If the named class cannot be found or the class is not a proper
      *  GridObject object, an error message is printed and the class is not
@@ -392,31 +425,10 @@ public class GridPkgFactory
     {
         for (int i = 0; i < classNames.length; i++) 
         {
-            String errStart = "Discarding " + ClassCategory.A_GRID_OBJECT +
-                              " choice \"" + classNames[i] + "\" because ";
-            try 
-            {
-                Class cls = Class.forName(classNames[i], true, 
-                        Thread.currentThread().getContextClassLoader());
-                // If we were to check for validity, it would be based
-                // on what constructors?  (And how many?)
-                    gridObjectClasses.add(cls);
-            }
-            catch (ClassNotFoundException e)
-            {
-                System.err.println(errStart + "no class found with that name.");
-            } 
-            catch (ClassCastException e)
-            {
-                System.err.println(errStart + e.getMessage());
-            }
-//             catch (NoSuchMethodException e) 
-//             {
-//                 System.err.println(errStart + "it doesn't have the proper constructor.");
-//             } 
+            addGridObjClassName(classNames[i]);
         }
     }
-        
+
     /** Adds bounded grid classes to the set maintained by the factory. 
      *  If the named class cannot be found or the class is not a proper bounded
      *  grid, an error message is printed, and that class is not added to the set.
@@ -446,7 +458,7 @@ public class GridPkgFactory
     public static boolean isValidGridClass(Class<?> cls,
                                            Class<?>[] ctorParameters)
     throws NoSuchMethodException
-    {	
+    {
         return hasCorrectCtor(cls, Grid.class, ctorParameters);
     }
     
@@ -458,7 +470,7 @@ public class GridPkgFactory
     public static boolean isValidGridObjectClass(Class<?> cls,
                                                  Class<?>[] ctorParameters)
     throws NoSuchMethodException
-    {	
+    {
         return hasCorrectCtor(cls, GridObject.class, ctorParameters);
     }
     
@@ -469,7 +481,7 @@ public class GridPkgFactory
     protected static boolean hasCorrectCtor(Class<?> cls, Class<?> requiredCls,
                                             Class<?>[] ctorParameters)
     throws NoSuchMethodException
-    {	
+    {
             if (!requiredCls.isAssignableFrom(cls)) 
                 throw new ClassCastException("not compatible with " + requiredCls + ".");
             Constructor<?> ctor = cls.getConstructor(ctorParameters);
@@ -513,7 +525,7 @@ public class GridPkgFactory
         private int value;
 
         /** Constructs a new ClassCategory object.
-         * 	  @param categoryCode  an integer value specifying a class category
+         *       @param categoryCode  an integer value specifying a class category
          */
         protected ClassCategory(int categoryCode)
         {
