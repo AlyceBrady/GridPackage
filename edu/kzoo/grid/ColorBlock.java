@@ -32,6 +32,13 @@ public class ColorBlock extends GridObject
     // Encapsulated data for each color block object
     private Color    theColor;      // the color of this color block
 
+    /** Constructs a color block with a random color.
+     **/
+    public ColorBlock()
+    {
+        this(NamedColor.getRandomColor());
+    }
+
     /** Constructs a color block with the specified color.
      *  @param colorValue  the color that fills this color block
      **/
@@ -41,12 +48,32 @@ public class ColorBlock extends GridObject
         theColor = colorValue;
     }
 
+    /** Constructs a color block with a random color in the specified grid.
+     *  @param grid        the grid containing this color block
+     *  @param loc         the location of the color block in <code>grid</code>
+     **/
+    public ColorBlock(Grid grid, Location loc)
+    {
+        this(grid, loc, NamedColor.getRandomColor());
+    }
+
     /** Constructs a color block with the specified color.
      *  @param colorValue  the color that fills this color block
      *  @param grid        the grid containing this color block
      *  @param loc         the location of the color block in <code>grid</code>
      **/
     public ColorBlock(Color colorValue, Grid grid, Location loc)
+    {
+        this(grid, loc, colorValue);
+    }
+
+    /** Constructs a color block with the specified color.  (This is the
+     *  parameter order used by the GridPkgFactory.)
+     *  @param grid        the grid containing this color block
+     *  @param loc         the location of the color block in <code>grid</code>
+     *  @param colorValue  the color that fills this color block
+     **/
+    public ColorBlock(Grid grid, Location loc, Color colorValue)
     {
         super(grid, loc);
         theColor = colorValue;
