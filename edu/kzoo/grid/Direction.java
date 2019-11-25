@@ -45,10 +45,8 @@ public class Direction
     public static final Direction WEST = new Direction(270);
     public static final Direction NORTHWEST = new Direction (315);
 
-    /** Number of degrees in compass
-     *  (will not be tested on the Advanced Placement exam).
-     **/
-    public static final int FULL_CIRCLE = 360;   // not tested on AP exam
+    /** Number of degrees in compass. **/
+    public static final int FULL_CIRCLE = 360;
 
     // Array of strings representing common compass points.
     private static final String[] dirNames = {"North", "Northeast", "East", "Southeast",
@@ -126,8 +124,7 @@ public class Direction
         return inDegrees() == d.inDegrees();
     }
 
-    /** Generates a hash code for this direction
-     *  (will not be tested on the Advanced Placement exam).
+    /** Generates a hash code for this direction.
      *  @return     a hash code for a <code>Direction</code> object
      **/
     public int hashCode()
@@ -196,8 +193,7 @@ public class Direction
             return dirInDegrees + " degrees";
     }
 
-    /** Rounds this direction to the nearest "cardinal" direction
-     *  (will not be tested on the Advanced Placement exam).
+    /** Rounds this direction to the nearest "cardinal" direction.
      *  <p>
      *  The choice of possible cardinal directions depends on the number
      *  of cardinal directions and the starting direction.  For example,
