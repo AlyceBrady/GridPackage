@@ -43,7 +43,7 @@ package edu.kzoo.grid;
  *  <tr><td>removeAll</td><td></td><td><i>O</i>(<code>r * c</code>)</td></tr>
  *  <tr><td>space</td><td></td><td><i>O</i>(<code>r * c</code>)</td></tr>
  *  </table>
- *  where <code>r</code> is the number of rows and <code>rc</code> is the
+ *  where <code>r</code> is the number of rows and <code>c</code> is the
  *  number of columns in the grid.
  *
  *  <p>
