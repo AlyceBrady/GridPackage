@@ -717,7 +717,7 @@ public class GridAppFrame extends JFrame implements GridDisplay
   // GUI doesn't know about).
 
     /** Registers the specified object as interested in being notified
-     *  of changes in the identify of the grid being modeled.
+     *  of changes in the identity of the grid being modeled.
      *    @param listener  the object that should be notified of
      *                     changes to the identity of the grid
      **/ 
